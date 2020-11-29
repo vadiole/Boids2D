@@ -1,0 +1,35 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Boids2D" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+        <!-- Customize your theme here. -->
+
+        <item name="alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
+        <item name="android:alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
+    </style>
+
+    <style name="DialogFullScreen" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:windowIsFloating">false</item>
+
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+    </style>
+
+    <style name="NoAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+
+</resources>
