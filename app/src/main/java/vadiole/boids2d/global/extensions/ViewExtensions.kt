@@ -1,4 +1,4 @@
-package com.namaztime.qibla.tools.extensions
+package vadiole.boids2d.global.extensions
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -51,12 +51,12 @@ fun View.withCircularAnimation(
             interpolator = FastOutSlowInInterpolator()
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
                     if (isHide) visibility = View.INVISIBLE
                     onAnimationEnd.invoke()
                 }
             })
         }
+
 
         if (!isHide) visibility = View.VISIBLE
         anim.start()

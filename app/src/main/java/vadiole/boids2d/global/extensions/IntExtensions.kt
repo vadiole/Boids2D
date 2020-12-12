@@ -1,4 +1,4 @@
-package vadiole.boids2d.extensions
+package vadiole.boids2d.global.extensions
 
 import android.content.res.Resources
 

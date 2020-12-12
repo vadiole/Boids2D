@@ -1,4 +1,4 @@
-package com.namaztime.qibla.tools.extensions
+package vadiole.boids2d.global.extensions
 
 import kotlin.math.roundToInt
 

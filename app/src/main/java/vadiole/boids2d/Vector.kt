@@ -1,5 +1,6 @@
 package vadiole.boids2d
 
+import android.util.Log
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -72,4 +73,12 @@ class Vector(var x: Float, var y: Float, var z: Float) {
         z = 0f
         return this
     }
+
+    fun log(TAG : String = "VECTOR")  {
+        Log.d(TAG, "x - ${x.roundTo(5)}\t| y - ${y.roundTo(5)}")
+    }
+}
+
+fun Float.roundTo(n: Int): Float {
+    return "%.${n}f".format(this).toFloat()
 }

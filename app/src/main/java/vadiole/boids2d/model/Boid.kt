@@ -1,6 +1,7 @@
-package vadiole.boids2d
+package vadiole.boids2d.model
 
 import android.graphics.Color
+import vadiole.boids2d.Vector
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -23,19 +24,34 @@ class Boid {
         gl.glFrontFace(GL10.GL_CW)
     }
 
-    fun step(boids: Array<Boid>, neigbours: IntArray, distances: FloatArray) {
-        val acceleration = flock(boids, neigbours, distances)
+    fun step(
+        boids: Array<Boid>,
+        neigbours: IntArray,
+        distances: FloatArray,
+        target: Vector
+    ) {
+        val acceleration = flock(boids, neigbours, distances, target)
         velocity.add(acceleration).limit(MAX_VELOCITY)
         location.add(velocity)
     }
 
-    private fun flock(boids: Array<Boid>, neigbours: IntArray, distances: FloatArray): Vector {
-        val separation = separate(boids, neigbours, distances).multiply(
-            SEPARATION_WEIGHT
-        )
+    private fun flock(
+        boids: Array<Boid>,
+        neigbours: IntArray,
+        distances: FloatArray,
+        target: Vector
+    ): Vector {
+        val separation = separate(boids, neigbours, distances).multiply(SEPARATION_WEIGHT)
         val alignment = align(boids, neigbours).multiply(ALIGNMENT_WEIGHT)
         val cohesion = cohere(boids, neigbours).multiply(COHESION_WEIGHT)
-        return separation.add(alignment).add(cohesion)
+        val toTarget = target(target).multiply(TARGET_WEIGHT)
+        return separation.add(alignment).add(cohesion).add(toTarget)
+    }
+
+    private fun target(t: Vector): Vector {
+        if (t.x > 100) return target.init()
+        val force = target.copyFrom(t).subtract(location)
+        return steerTo(force)
     }
 
     private fun cohere(boids: Array<Boid>, neigbours: IntArray): Vector {
@@ -102,13 +118,14 @@ class Boid {
 
     companion object {
         var side = 0.015f
-        private const val MAX_VELOCITY = 0.031f
+        const val MAX_VELOCITY = 0.035f
         private const val DESIRED_SEPARATION = 0.01f
         private const val SEPARATION_WEIGHT = 0.05f
         private const val ALIGNMENT_WEIGHT = 0.5f
         private const val COHESION_WEIGHT = 0.3f
+        private const val TARGET_WEIGHT = 0.6f
         private const val MAX_FORCE = 0.005f
-        private const val INERTION = 0.001f
+        private const val INERTION = 0.0012f
         private const val CENTRIC_POWER = 0.81f // > 0 more power
         private var mFVertexBuffer: FloatBuffer? = null
         private var mColorBuffer: FloatBuffer? = null
@@ -117,7 +134,8 @@ class Boid {
         private val sum = Vector(0f, 0f, 0f)
         private val align = Vector(0f, 0f, 0f)
         private val separate = Vector(0f, 0f, 0f)
-        fun initModel(size: Float, model: Int) {
+        private val target = Vector(0f, 0f, 0f)
+        fun initModel(size: Float, color: Int) {
             side = size
             val indices = byteArrayOf( // Vertex indices of the 4 Triangles
                 2, 4, 3,  // front face (CCW)
@@ -133,25 +151,25 @@ class Boid {
                 0.0f, side * 2, 0.0f // 4. top
             )
             val colors = floatArrayOf( //
-                (Color.red(model) - 40) / 255f,
-                (Color.green(model) - 40) / 255f,
-                (Color.blue(model) - 40) / 255f,
+                (Color.red(color)) / 255f,
+                (Color.green(color)) / 255f,
+                (Color.blue(color)) / 255f,
                 0.5f,  //
-                (Color.red(model) - 40) / 255f,
-                (Color.green(model) - 40) / 255f,
-                (Color.blue(model) - 40) / 255f,
+                (Color.red(color)) / 255f,
+                (Color.green(color)) / 255f,
+                (Color.blue(color)) / 255f,
                 0.5f,  //
-                (Color.red(model) - 40) / 255f,
-                (Color.green(model) - 40) / 255f,
-                (Color.blue(model) - 40) / 255f,
+                (Color.red(color)) / 255f,
+                (Color.green(color)) / 255f,
+                (Color.blue(color)) / 255f,
                 0.5f,  //
-                (Color.red(model) - 40) / 255f,
-                (Color.green(model) - 40) / 255f,
-                (Color.blue(model) - 40) / 255f,
+                (Color.red(color)) / 255f,
+                (Color.green(color)) / 255f,
+                (Color.blue(color)) / 255f,
                 0.5f,  //
-                (Color.red(model) + 0) / 255f,
-                (Color.green(model) + 0) / 255f,
-                (Color.blue(model) + 0) / 255f,
+                (Color.red(color) + 0) / 255f,
+                (Color.green(color) + 0) / 255f,
+                (Color.blue(color) + 0) / 255f,
                 1.0f // nose
             )
             var vbb = ByteBuffer.allocateDirect(vertices.size * 4)

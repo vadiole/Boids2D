@@ -2,9 +2,10 @@ package vadiole.boids2d
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import androidx.core.content.edit
-import com.namaztime.qibla.tools.extensions.getDouble
-import com.namaztime.qibla.tools.extensions.putDouble
+import vadiole.boids2d.global.extensions.getDouble
+import vadiole.boids2d.global.extensions.putDouble
 
 
 object Preferences {
@@ -79,6 +80,21 @@ object Preferences {
 
     private const val BOIDS_SIZE_KEY = "boidsSizeKey"
     var boidsSize: Int
-        get() = preferences[BOIDS_SIZE_KEY, 8]
+        get() {
+            val size = preferences[BOIDS_SIZE_KEY, 3]
+            return if (size >= 16) 16 else size
+        }
         set(value) = run { preferences[BOIDS_SIZE_KEY] = value }
+
+    private const val BOIDS_COLOR_KEY = "boidsColorKey"
+    var boidsColor: Int
+        get() = preferences[BOIDS_COLOR_KEY, Color.WHITE]
+        set(value) = run { preferences[BOIDS_COLOR_KEY] = value }
+
+    private const val BACKGROUND_COLOR_KEY = "backgroundColorKey"
+    var backgroundColor: Int
+        get() = preferences[BACKGROUND_COLOR_KEY, Color.BLACK]
+        set(value) = run { preferences[BACKGROUND_COLOR_KEY] = value }
+
+
 }

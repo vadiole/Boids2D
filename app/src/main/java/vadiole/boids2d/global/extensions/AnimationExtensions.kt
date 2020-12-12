@@ -1,4 +1,4 @@
-package com.namaztime.qibla.tools.extensions
+package vadiole.boids2d.global.extensions
 
 import android.view.animation.Animation
 

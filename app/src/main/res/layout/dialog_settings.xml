@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/translucent_background"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:splitMotionEvents="false">
+
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="56dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large.Boids.Primary"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/button_back"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="?android:attr/actionBarItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_title"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_title"
+        app:srcCompat="@drawable/abc_vector_test" />
+
+    <TextView
+        android:id="@+id/boids_count_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_count_of_particles"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
+        app:layout_constraintTop_toBottomOf="@id/settings_title" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/boids_count_title">
+
+        <SeekBar
+            android:id="@+id/slider_boids_count"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:max="100"
+            android:minHeight="40dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:progressTint="@android:color/white"
+            android:thumbTint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="50" />
+
+
+        <TextView
+            android:id="@+id/text_boids_count"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="24dp"
+            android:text="1000"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/boids_size_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_size_of_particles"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/boids_size_title">
+
+        <SeekBar
+            android:id="@+id/slider_boids_size"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:max="15"
+            android:minHeight="40dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:progressTint="@android:color/white"
+            android:thumbTint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="50" />
+
+
+        <TextView
+            android:id="@+id/text_boids_size"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="24dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@android:color/white"
+            tools:text="1000" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/divider"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        tools:layout_editor_absoluteX="21dp" />
+
+
+    <TextView
+        android:id="@+id/settings_boids_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="60dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_color_boids"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/view_boids_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/settings_boids_color"
+        app:layout_constraintEnd_toEndOf="@id/settings_boids_color"
+        app:layout_constraintTop_toTopOf="@id/settings_boids_color"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        app:srcCompat="@android:color/holo_red_dark"
+        app:strokeColor="@color/divider"
+        app:strokeWidth="1px" />
+
+    <TextView
+        android:id="@+id/settings_background_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="60dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="@string/settings_color_background"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_boids_color" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/view_background_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/settings_background_color"
+        app:layout_constraintEnd_toEndOf="@id/settings_background_color"
+        app:layout_constraintTop_toTopOf="@id/settings_background_color"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+        app:srcCompat="@color/black"
+        app:strokeColor="@color/divider"
+        app:strokeWidth="1px" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

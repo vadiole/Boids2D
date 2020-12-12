@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.*
 
 @SuppressLint("ClickableViewAccessibility")
 class BoidsGLSurfaceView(context: Context) : GLSurfaceView(context) {
@@ -20,7 +19,9 @@ class BoidsGLSurfaceView(context: Context) : GLSurfaceView(context) {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
             if (event.action == ACTION_MOVE || event.action == ACTION_DOWN) {
-                queueEvent { renderer?.touch(event.rawX, event.rawY) }
+                queueEvent { renderer?.actionDown(event.x, event.y, event.pressure) }
+            } else if (event.action == ACTION_UP) {
+                queueEvent { renderer?.actionUp() }
             }
         }
         return true

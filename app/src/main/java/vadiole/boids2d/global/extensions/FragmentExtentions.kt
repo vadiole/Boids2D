@@ -1,4 +1,4 @@
-package com.namaztime.qibla.tools.extensions
+package vadiole.boids2d.global.extensions
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -50,7 +50,8 @@ fun Fragment.share(text: String) = startActivity(Intent().apply {
 })
 
 fun Fragment.toClipboard(label: String, text: String) {
-    val systemService = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val systemService =
+        requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val myClip = ClipData.newPlainText(label, text)
     systemService.setPrimaryClip(myClip)
 }
@@ -58,7 +59,9 @@ fun Fragment.toClipboard(label: String, text: String) {
 @SuppressLint("DefaultLocale")
 fun Fragment.openUrl(url: String, errorMessage: Int) {
     activity?.let {
-        val webIntent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url.trim().replace(" ", "+").toLowerCase()) }
+        val webIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(url.trim().replace(" ", "+").toLowerCase())
+        }
         if (webIntent.resolveActivity(it.packageManager) != null) startActivity(webIntent)
         else Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
     }
@@ -84,7 +87,6 @@ fun Fragment.clearLightStatusBar() {
 /**
  * Метод для получения размеров экрана
  *
- * @param фрагмент для получения окна
  * @return Point: x - width, y - height
  */
 fun Fragment.getScreenSize(): Point {
@@ -107,11 +109,11 @@ fun Fragment.getDrawable(id: Int): Drawable? {
 
 @SuppressLint("UseCompatLoadingForDrawables")
 fun Fragment.getAnimatedDrawable(id: Int): AnimatedVectorDrawable? {
-    return (requireContext().getDrawable(id) as AnimatedVectorDrawable)
+    return (requireContext().getDrawable(id) as? AnimatedVectorDrawable)
 }
 
 fun Fragment.getColor(id: Int): Int {
-    return requireContext().getColor(id)
+    return ContextCompat.getColor(requireContext(), id)
 }
 
 fun Fragment.getDimen(id: Int): Float {
@@ -129,7 +131,10 @@ fun Fragment.getAnimation(id: Int, onAnimationEnd: (Animation?) -> Unit = {}): A
 }
 
 fun Fragment.isPermissionGranted(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(
+        requireContext(),
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 fun Fragment.openAppSystemSettings() {

@@ -3,5 +3,22 @@
     <string name="settings">Settings</string>
     <string name="settings_count_of_particles">Boids count</string>
     <string name="settings_size_of_particles">Boids size</string>
+    <string name="settings_color_boids">Boids color</string>
+    <string name="settings_color_background">Background color</string>
+
     <string name="tutorial_settings">Double tap to open settings</string>
+
+
+    <!--    color picker-->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="picker_channel_alpha">A</string>
+    <string name="picker_channel_red">R</string>
+    <string name="picker_channel_green">G</string>
+    <string name="picker_channel_blue">B</string>
+
+    <string name="picker_channel_hue">H</string>
+    <string name="picker_channel_saturation">S</string>
+    <string name="picker_channel_value">V</string>
 </resources>

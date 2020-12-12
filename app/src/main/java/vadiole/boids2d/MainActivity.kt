@@ -11,17 +11,20 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.setPadding
+import vadiole.boids2d.base.BaseDialog
+import vadiole.boids2d.global.extensions.hide
 
 
 @SuppressLint("ClickableViewAccessibility")
-class MainActivity : AppCompatActivity(), Settings.OnDialogInteractionListener {
+class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionListener {
     private val TAG = MainActivity::class.java.simpleName
     private lateinit var mDetector: GestureDetectorCompat
 
     private var glSurfaceView: BoidsGLSurfaceView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -46,7 +49,8 @@ class MainActivity : AppCompatActivity(), Settings.OnDialogInteractionListener {
             setTextColor(ContextCompat.getColor(context, android.R.color.white))
         }
         val tutorialLP = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.CENTER)
-        val frame = FrameLayout(this).apply {
+        FrameLayout(this).apply {
+            isMotionEventSplittingEnabled = false
             addView(glSurfaceView)
             if (!Preferences.tutorialSettingsShown) {
                 addView(tutorialText, tutorialLP)
@@ -54,9 +58,11 @@ class MainActivity : AppCompatActivity(), Settings.OnDialogInteractionListener {
             }
             setContentView(this)
         }
-        mDetector = GestureDetectorCompat(this, MyGestureListener { motionEvent ->
+        mDetector = GestureDetectorCompat(this, MyGestureListener { event ->
+            tutorialText.hide()
             Log.i(TAG, "show settings")
-            Settings().show(supportFragmentManager, "settings")
+            SettingsDialog.newInstance(event.rawX, event.rawY)
+                .show(supportFragmentManager, "settings")
         })
     }
 
@@ -68,6 +74,11 @@ class MainActivity : AppCompatActivity(), Settings.OnDialogInteractionListener {
     override fun onResume() {
         super.onResume()
         glSurfaceView?.onResume()
+    }
+
+    override fun onBackPressed() {
+        if ((supportFragmentManager.findFragmentByTag("settings") as BaseDialog?)?.onBackPressed() == true) return
+        super.onBackPressed()
     }
 
     private class MyGestureListener(val callback: (MotionEvent) -> Unit) :
@@ -89,7 +100,8 @@ class MainActivity : AppCompatActivity(), Settings.OnDialogInteractionListener {
                 mDetector.onTouchEvent(event)
             }
         }
-        val frame = FrameLayout(this).apply {
+        FrameLayout(this).apply {
+            isMotionEventSplittingEnabled = false
             addView(glSurfaceView)
             setContentView(this)
         }

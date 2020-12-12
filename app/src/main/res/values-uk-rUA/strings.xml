@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Boids 2D</string>
+    <string name="settings">Налаштування</string>
+    <string name="settings_count_of_particles">Кількість</string>
+    <string name="settings_size_of_particles">Розмір</string>
+    <string name="settings_color_boids">Колір частинок</string>
+    <string name="settings_color_background">Колір фону</string>
+    <string name="tutorial_settings">Подвійний тап відкриває налаштування</string>
+    <string name="action_ok">ОК</string>
+    <string name="action_cancel">Скасувати</string>
+    <string name="picker_channel_alpha">А</string>
+    <string name="picker_channel_red">Ч</string>
+    <string name="picker_channel_green">З</string>
+    <string name="picker_channel_blue">С</string>
+    <string name="picker_channel_hue">В</string>
+    <string name="picker_channel_saturation">Н</string>
+    <string name="picker_channel_value">Я</string>
+</resources>

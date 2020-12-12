@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.opengl.GLSurfaceView
 import android.opengl.GLU
+import android.util.Log
 import android.view.Surface
 import android.view.WindowManager
+import vadiole.boids2d.model.Boid
 import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -27,6 +29,9 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     private val tempVector: Vector = Vector(0f, 0f, 0f)
     var distances: Array<FloatArray> = emptyArray()
     private var neigbours: Array<IntArray> = emptyArray()
+
+    var target = Vector(1000f, 1000f, 0f)
+
     private var grid: Array<Array<BitSet?>> = emptyArray()
     private val temp_dists = FloatArray(NEIGHBOURS)
     private var ratio = 0f
@@ -69,8 +74,8 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     }
 
 
-    private fun index(x: Float): Int {
-        var x = x
+    private fun index(_x: Float): Int {
+        var x = _x
         if (abs(x) > 4f) x = (if (x > 0) 1 else 1) * 4f
         x += 4f
         x *= 3f
@@ -126,8 +131,9 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         for (b in boids.indices) {
             newBoids[b].copyFrom(boids[b])
         }
+
         for (b in boids.indices) {
-            boids[b].step(newBoids, neigbours[b], distances[b])
+            boids[b].step(newBoids, neigbours[b], distances[b], target)
         }
     }
 
@@ -145,19 +151,19 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         gl.glViewport(0, 0, width, height)
         gl.glMatrixMode(GL11.GL_PROJECTION)
         gl.glLoadIdentity()
-        GLU.gluPerspective(gl, 45f, ratio, DISTANCE - 5f, DISTANCE + 5f)
+        GLU.gluPerspective(gl, 45f, ratio, DISTANCE - 8f, DISTANCE + 8f)
         gl.glMatrixMode(GL11.GL_MODELVIEW)
         gl.glLoadIdentity()
     }
 
     override fun onSurfaceCreated(gl: GL10, config: EGLConfig?) {
         val size = Preferences.boidsSize / 260f
-        val model = Color.WHITE
-        Boid.initModel(size, model)
-        val backgroud = -0x1000000
-        r = Color.red(backgroud) / 255f
-        g = Color.green(backgroud) / 255f
-        b = Color.blue(backgroud) / 255f
+        val boidsColor = Preferences.boidsColor
+        Boid.initModel(size, boidsColor)
+        val backgroundColor = Preferences.backgroundColor
+        r = Color.red(backgroundColor) / 255f
+        g = Color.green(backgroundColor) / 255f
+        b = Color.blue(backgroundColor) / 255f
         val count = Preferences.boidsCount
         boids = Array(count) { Boid() }
         newBoids = Array(count) { Boid() }
@@ -178,14 +184,27 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         gl.glDisable(GL10.GL_DITHER)
     }
 
-    fun touch(x: Float, y: Float) {
-        val relx = (x - width / 2f) / width * (ratio * DISTANCE)
-        val rely = (height / 2f - y) / height * DISTANCE
-        for (boid in boids) {
-            boid.velocity.x = relx - boid.location.x
-            boid.velocity.y = rely - boid.location.y
-            boid.velocity.z = 0 - boid.location.z
-            boid.velocity.copyFrom(tempVector.copyFrom(boid.velocity).normalize())
-        }
+    fun actionDown(x: Float, y: Float, size : Float) {
+        val relx = (x - width / 2f) / width * (ratio * DISTANCE) * 1.8f
+        val rely = (height / 2f - y) / height * DISTANCE * 1.8f
+
+        target.x = relx
+        target.y = rely
+
+
+        Log.d("ACTION", "onActionDown, $relx, $rely")
+
+//        for (boid in boids) {
+//            boid.velocity.x = relx - boid.location.x
+//            boid.velocity.y = rely - boid.location.y
+//            boid.velocity.z = 0 - boid.location.z
+//            boid.velocity.copyFrom(tempVector.copyFrom(boid.velocity).normalize())
+//        }
+    }
+
+    fun actionUp() {
+        Log.d("ACTION", "onActionUp")
+        target.x = 1000f
+        target.y = 1000f
     }
 }
