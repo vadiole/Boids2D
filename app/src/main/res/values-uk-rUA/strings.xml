@@ -6,7 +6,8 @@
     <string name="settings_size_of_particles">Розмір</string>
     <string name="settings_color_boids">Колір частинок</string>
     <string name="settings_color_background">Колір фону</string>
-    <string name="tutorial_settings">Подвійний тап відкриває налаштування</string>
+    <string name="tutorial_settings_open">Подвійний тап відкриває налаштування</string>
+    <string name="tutorial_settings_close">Свайп вгору закриває налаштування</string>
     <string name="action_ok">ОК</string>
     <string name="action_cancel">Скасувати</string>
     <string name="picker_channel_alpha">А</string>
@@ -16,4 +17,5 @@
     <string name="picker_channel_hue">В</string>
     <string name="picker_channel_saturation">Н</string>
     <string name="picker_channel_value">Я</string>
+    <string name="error_google_play">Неможливо відкрити: ні Google Play, ні веб браузер не встановлені</string>
 </resources>

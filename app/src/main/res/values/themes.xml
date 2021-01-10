@@ -17,10 +17,17 @@
 
         <item name="alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
         <item name="android:alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
+
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
     </style>
 
     <style name="dialog_full_screen" parent="Theme.AppCompat.Dialog">
         <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@style/NoAnimation</item>
@@ -28,6 +35,9 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
     </style>
 
     <style name="NoAnimation" parent="@android:style/Animation.Activity">

@@ -1,22 +1,35 @@
 package vadiole.boids2d
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.view.HapticFeedbackConstants.*
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.core.view.GestureDetectorCompat
 import dev.chrisbanes.insetter.setEdgeToEdgeSystemUiFlags
 import vadiole.boids2d.base.BaseDialog
 import vadiole.boids2d.databinding.DialogSettingsBinding
 import vadiole.boids2d.global.colorpicker.ColorMode
 import vadiole.boids2d.global.colorpicker.ColorPickerDialog
+import vadiole.boids2d.global.extensions.openUrl
+import vadiole.boids2d.global.extensions.toPx
 import vadiole.boids2d.global.extensions.withCircularAnimation
 import vadiole.boids2d.global.onclick.onClick
 import vadiole.boids2d.global.viewbinding.viewBinding
+import kotlin.math.abs
+
 
 class SettingsDialog : BaseDialog() {
+    private val TAG = "SettingsDialog"
     private var listener: OnDialogInteractionListener? = null
+    private lateinit var mDetector: GestureDetectorCompat
     private var isNeedApply = false
 
     private var animPointX = 0f
@@ -37,37 +50,55 @@ class SettingsDialog : BaseDialog() {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.decorView?.visibility = View.INVISIBLE
             setOnShowListener {
-                window?.decorView?.withCircularAnimation(View.VISIBLE, 500L, animPointX, animPointY)
+                window?.decorView?.withCircularAnimation(
+                    View.VISIBLE,
+                    400L,
+                    animPointX,
+                    animPointY
+                )
                 window?.decorView?.apply {
                     alpha = 0f
-                    animate().alpha(1.0f).setDuration(400L).start()
+                    animate().alpha(1.0f).setDuration(250L)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                window?.decorView?.performHapticFeedback(
+                                    KEYBOARD_TAP,
+                                    FLAG_IGNORE_GLOBAL_SETTING
+                                )
+                            }
+                        }).start()
                 }
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, group: ViewGroup?, b: Bundle?): View {
-        return inflater.inflate(R.layout.dialog_settings, group, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.dialog_settings, container, false)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.setEdgeToEdgeSystemUiFlags()
-        with(requireDialog()) {
-            window?.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-            window?.decorView?.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        }
+
+        mDetector = GestureDetectorCompat(requireContext(), MyGestureListener {
+            Log.i(TAG, "dismiss settings")
+            onBackPressed()
+        })
+
 
         isNeedApply = false
         with(binding) {
-            viewBoidsColor.setImageDrawable(ColorDrawable(Preferences.boidsColor))
-            viewBackgroundColor.setImageDrawable(ColorDrawable(Preferences.backgroundColor))
+            viewBoidsColor.setImageDrawable(ColorDrawable(Config.boidsColor))
+            viewBackgroundColor.setImageDrawable(ColorDrawable(Config.backgroundColor))
 
             sliderBoidsCount.apply {
-                progress = Preferences.boidsCount / 20
+                max = Config.devicePerformance.getMaxBoidsSeekbar()
+                progress = Config.boidsCount / 20
                 textBoidsCount.text = (progress * 20).toString()
                 setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
@@ -83,14 +114,14 @@ class SettingsDialog : BaseDialog() {
                     }
 
                     override fun onStopTrackingTouch(seekBar: SeekBar) {
-                        Preferences.boidsCount = seekBar.progress * 20
+                        Config.boidsCount = seekBar.progress * 20
                     }
                 })
             }
 
 
             sliderBoidsSize.apply {
-                progress = Preferences.boidsSize - 1
+                progress = Config.boidsSize - 1
                 textBoidsSize.text = (progress + 1).toString()
                 setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
@@ -106,7 +137,7 @@ class SettingsDialog : BaseDialog() {
                     }
 
                     override fun onStopTrackingTouch(seekBar: SeekBar) {
-                        Preferences.boidsSize = seekBar.progress + 1
+                        Config.boidsSize = seekBar.progress + 1
                     }
                 })
             }
@@ -118,29 +149,54 @@ class SettingsDialog : BaseDialog() {
             settingsBoidsColor.onClick {
                 val picker = ColorPickerDialog.Builder()
                     .colorMode(ColorMode.RGB)
-                    .initialColor(Preferences.boidsColor)
+                    .initialColor(Config.boidsColor)
                     .onColorSelected { color ->
-                        Preferences.boidsColor = color
+                        Config.boidsColor = color
                         viewBoidsColor.setImageDrawable(ColorDrawable(color))
                         isNeedApply = true
                     }
-                    .create()
+                    .build()
                 picker.show(childFragmentManager, "boids_color")
 //                Toast.makeText(context, "Pick boids color", Toast.LENGTH_SHORT).show()
             }
             settingsBackgroundColor.onClick {
                 val picker = ColorPickerDialog.Builder()
                     .colorMode(ColorMode.RGB)
-                    .initialColor(Preferences.backgroundColor)
+                    .initialColor(Config.backgroundColor)
                     .onColorSelected { color ->
-                        Preferences.backgroundColor = color
+                        Config.backgroundColor = color
                         viewBackgroundColor.setImageDrawable(ColorDrawable(color))
                         isNeedApply = true
                     }
-                    .create()
+                    .build()
                 picker.show(childFragmentManager, "background_color")
 //                Toast.makeText(context, "Pick background color", Toast.LENGTH_SHORT).show()
             }
+
+            madeBy.onClick {
+                openUrl(
+                    "https://play.google.com/store/apps/dev?id=4763171503902347202",
+                    R.string.error_google_play
+                )
+            }
+
+            madeBy.setOnLongClickListener {
+                if (fireworks.isStarted) return@setOnLongClickListener true
+                it.performHapticFeedback(KEYBOARD_TAP, FLAG_IGNORE_GLOBAL_SETTING)
+                fireworks.start()
+                true
+            }
+
+            root.setOnTouchListener { _, event ->
+                mDetector.onTouchEvent(event)
+                return@setOnTouchListener true
+            }
+        }
+
+
+        if (!Config.tutorialExitSettingsShown) {
+            Toast.makeText(context, R.string.tutorial_settings_close, Toast.LENGTH_LONG).show()
+            Config.tutorialExitSettingsShown = true
         }
 
     }
@@ -162,7 +218,7 @@ class SettingsDialog : BaseDialog() {
             dialog?.window?.decorView?.let {
                 if (isNeedApply) listener?.onSettingsAction()
                 it.withCircularAnimation(View.INVISIBLE, 400L, animPointX, animPointY) {
-                    if (it.isAttachedToWindow) it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    if (it.isAttachedToWindow) it.performHapticFeedback(VIRTUAL_KEY)
                     if (isAdded) dismiss()
                 }
                 it.alpha = 1.0f
@@ -176,6 +232,43 @@ class SettingsDialog : BaseDialog() {
 
     interface OnDialogInteractionListener {
         fun onSettingsAction()
+    }
+
+    private class MyGestureListener(val onFlingUp: () -> Unit) :
+        GestureDetector.SimpleOnGestureListener() {
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            val x1 = e1.x
+            val y1 = e1.y
+            val x2 = e2.x
+            val y2 = e2.y
+            if (abs(x1 - x2) < 100.toPx && y2 < y1) {
+                onFlingUp.invoke()
+                return true
+            }
+            return false
+        }
+//
+//        override fun onScroll(
+//            e1: MotionEvent,
+//            e2: MotionEvent,
+//            distanceX: Float,
+//            distanceY: Float
+//        ): Boolean {
+//            val x1 = e1.x
+//            val y1 = e1.y
+//            val x2 = e2.x
+//            val y2 = e2.y
+//            if (abs(y1 - y2) < 300.toPx && x2 > x1) {
+//                onFlingUp.invoke()
+//                return true
+//            }
+//            return false
+//        }
     }
 
     companion object {

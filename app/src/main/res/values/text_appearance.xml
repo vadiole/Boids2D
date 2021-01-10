@@ -27,4 +27,17 @@
     <style name="TextAppearance.AppCompat.Large.Boids.Primary" parent="TextAppearance.AppCompat.Large.Boids">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="TextAppearance.AppCompat.Small.Boids.Secondary" parent="TextAppearance.AppCompat.Small.Boids">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
+
+
+    <style name="TextAppearance.AppCompat.Medium.Boids.Secondary" parent="TextAppearance.AppCompat.Medium.Boids">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Large.Boids.Secondary" parent="TextAppearance.AppCompat.Large.Boids">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
 </resources>

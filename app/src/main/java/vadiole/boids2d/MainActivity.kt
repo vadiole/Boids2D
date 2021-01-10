@@ -4,19 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
-import androidx.core.view.setPadding
 import vadiole.boids2d.base.BaseDialog
+import vadiole.boids2d.boids.BoidsGLSurfaceView
+import vadiole.boids2d.boids.BoidsRenderer
 import vadiole.boids2d.global.extensions.hide
+import vadiole.boids2d.global.extensions.hideSystemUI
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -28,13 +27,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        window.decorView.systemUiVisibility =
-            SYSTEM_UI_FLAG_HIDE_NAVIGATION or SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        supportActionBar?.hide()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         glSurfaceView = BoidsGLSurfaceView(this).apply {
             setEGLConfigChooser(8, 8, 8, 8, 16, 0)
@@ -44,17 +37,17 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
             }
         }
         val tutorialText = TextView(this).apply {
-            setText(R.string.tutorial_settings)
+            setText(R.string.tutorial_settings_open)
             textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+            gravity = Gravity.CENTER
             setTextColor(ContextCompat.getColor(context, android.R.color.white))
         }
         val tutorialLP = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.CENTER)
         FrameLayout(this).apply {
-            isMotionEventSplittingEnabled = false
             addView(glSurfaceView)
-            if (!Preferences.tutorialSettingsShown) {
+            if (!Config.tutorialSettingsShown) {
                 addView(tutorialText, tutorialLP)
-                Preferences.tutorialSettingsShown = true
+                Config.tutorialSettingsShown = true
             }
             setContentView(this)
         }
@@ -73,12 +66,18 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
 
     override fun onResume() {
         super.onResume()
+//        hideSystemUI()
         glSurfaceView?.onResume()
     }
 
     override fun onBackPressed() {
         if ((supportFragmentManager.findFragmentByTag("settings") as BaseDialog?)?.onBackPressed() == true) return
         super.onBackPressed()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+//        super.onWindowFocusChanged(hasFocus)
+        hideSystemUI()
     }
 
     private class MyGestureListener(val callback: (MotionEvent) -> Unit) :
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
             }
         }
         FrameLayout(this).apply {
-            isMotionEventSplittingEnabled = false
             addView(glSurfaceView)
             setContentView(this)
         }

@@ -10,9 +10,6 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import kotlin.math.hypot
 
 
-fun View.onClick(func: () -> Unit) = setOnClickListener { func() }
-
-
 fun View.hide() {
     visibility = View.GONE
 }

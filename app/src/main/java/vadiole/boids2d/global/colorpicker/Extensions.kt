@@ -25,3 +25,4 @@ private fun hsv(color: Int, index: Int, multiplier: Int = 1): Int {
     Color.colorToHSV(color, hsv)
     return (hsv[index] * multiplier).toInt()
 }
+

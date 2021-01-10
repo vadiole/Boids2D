@@ -4,12 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.core.content.edit
+import vadiole.boids2d.global.DevicePerformance
 import vadiole.boids2d.global.extensions.getDouble
 import vadiole.boids2d.global.extensions.putDouble
 
 
-object Preferences {
-    private const val SHARED_PREFERENCES_NAME = "NamazTime"
+object Config {
+    private const val SHARED_PREFERENCES_NAME = "boids2d_config"
 
     //  region preferences operators
     private lateinit var preferences: SharedPreferences
@@ -37,6 +38,7 @@ object Preferences {
         is Float -> edit { putFloat(key, value) }
         is Long -> edit { putLong(key, value) }
         is Double -> edit { putDouble(key, value) }
+        is DevicePerformance -> edit { putString(key, value.code) }
         else -> throw UnsupportedOperationException("Not yet implemented")
     }
 
@@ -55,6 +57,10 @@ object Preferences {
         Float::class -> getFloat(key, default as? Float ?: -1f) as T
         Long::class -> getLong(key, default as? Long ?: -1) as T
         Double::class -> getDouble(key, default as? Double ?: -1.0) as T
+        DevicePerformance::class -> DevicePerformance.lookupByCode(
+            getString(key, null) ?: (default as? DevicePerformance)?.code
+            ?: DevicePerformance.MEDIUM.code
+        ) as T
         else -> throw UnsupportedOperationException("Not yet implemented")
     }
     // endregion
@@ -71,6 +77,12 @@ object Preferences {
     var tutorialSettingsShown: Boolean
         get() = preferences[TUTORIAL_SETTINGS_SHOWN_KEY, false]
         set(value) = run { preferences[TUTORIAL_SETTINGS_SHOWN_KEY] = value }
+
+    private const val TUTORIAL_EXIT_SETTINGS_SHOWN_KEY = "tutorialExitSettingsShown"
+    var tutorialExitSettingsShown: Boolean
+        get() = preferences[TUTORIAL_EXIT_SETTINGS_SHOWN_KEY, false]
+        set(value) = run { preferences[TUTORIAL_EXIT_SETTINGS_SHOWN_KEY] = value }
+
 
     private const val BOIDS_COUNT_KEY = "boidsCountKey"
     var boidsCount: Int
@@ -96,5 +108,9 @@ object Preferences {
         get() = preferences[BACKGROUND_COLOR_KEY, Color.BLACK]
         set(value) = run { preferences[BACKGROUND_COLOR_KEY] = value }
 
+    private const val DEVICE_PERFORMANCE_KEY = "devicePerformanceKey"
+    var devicePerformance: DevicePerformance
+        get() = preferences[DEVICE_PERFORMANCE_KEY, DevicePerformance.getDevicePerformance()]
+        set(value) = run { preferences[DEVICE_PERFORMANCE_KEY] = value }
 
 }

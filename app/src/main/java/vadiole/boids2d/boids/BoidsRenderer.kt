@@ -1,13 +1,17 @@
-package vadiole.boids2d
+package vadiole.boids2d.boids
 
 import android.content.Context
 import android.graphics.Color
 import android.opengl.GLSurfaceView
 import android.opengl.GLU
 import android.util.Log
+import android.util.SparseArray
 import android.view.Surface
 import android.view.WindowManager
+import androidx.core.util.forEach
+import vadiole.boids2d.Config
 import vadiole.boids2d.model.Boid
+import vadiole.boids2d.model.Vector
 import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -19,6 +23,7 @@ import kotlin.math.floor
 
 class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
+    private val TAG: String = "BoidsRenderer"
     private val NEIGHBOURS = 7
     private var DISTANCE = 0f
     var boids = emptyArray<Boid>()
@@ -30,7 +35,8 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     var distances: Array<FloatArray> = emptyArray()
     private var neigbours: Array<IntArray> = emptyArray()
 
-    var target = Vector(1000f, 1000f, 0f)
+    private val pointsMaxSize = 10
+    private val targets: Array<Vector> = Array(pointsMaxSize) { Vector(1000f, 1000f, 0f) }
 
     private var grid: Array<Array<BitSet?>> = emptyArray()
     private val temp_dists = FloatArray(NEIGHBOURS)
@@ -39,20 +45,40 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     private var g = 0f
     private var b = 0f
 
-    var startTime = System.currentTimeMillis()
-    var dt: Long = 0
-    private var rotationDebug = 0f
+
+    /*
+     * Timestamp of previous frame.  Used for animation.  We cap the maximum inter-frame delta
+     * at 0.5 seconds, so that a major hiccup won't cause things to behave too crazily.
+     */
+    private val NANOS_PER_SECOND = 1000000000.0
+    private val MAX_FRAME_DELTA_SEC = 0.5
+    private var mPrevFrameWhenNsec: Long = 0
+
+    /*
+     * Pause briefly on certain transitions, e.g. before launching a new ball after one was lost.
+     */
+    private val mPauseDuration = 0f
+
+    /*
+     * Debug feature: do the next N frames in slow motion.  Useful when examining collisions.
+     * The speed will ramp up to normal over the last 60 frames.  (This is a debug feature, not
+     * part of the game, so we just count frames and assume the panel is somewhere near 60fps.)
+     * See DEBUG_COLLISIONS for example usage.
+     */
+    private val mDebugSlowMotionFrames = 0
+
+    // If FRAME_RATE_SMOOTHING is true, then the rest of these fields matter.
+    private val FRAME_RATE_SMOOTHING = true
+    private val RECENT_TIME_DELTA_COUNT = 5
+    var mRecentTimeDelta = DoubleArray(RECENT_TIME_DELTA_COUNT)
+    var mRecentTimeDeltaNext = 0
+
+    private var lastFpsLogTime = 0L
+    private var frameCounter = 0
 
 
     override fun onDrawFrame(gl: GL10) {
-        dt = System.currentTimeMillis() - startTime
-//        if (dt < 30) {
-//            try {
-//                Thread.sleep(30 - dt)
-//            } catch (e: InterruptedException) {
-//            }
-//        }
-        startTime = System.currentTimeMillis()
+        logFps()
         calculateScene()
         gl.glClearColor(r, g, b, 1.0f)
         gl.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
@@ -70,7 +96,16 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
             gl.glRotatef(fi, 0f, 1f, 0f)
             boid.draw(gl)
         }
+    }
 
+    private fun logFps() {
+        frameCounter++
+        val currentTime = System.nanoTime()
+        if (currentTime - lastFpsLogTime > 1000000000) {
+            Log.i(TAG, "fps: $frameCounter")
+            frameCounter = 0
+            lastFpsLogTime = currentTime
+        }
     }
 
 
@@ -84,6 +119,41 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     }
 
     private fun calculateScene() {
+        // First frame has no time delta, so make it a no-op.
+        if (mPrevFrameWhenNsec == 0L) {
+            mPrevFrameWhenNsec = System.nanoTime();     // use monotonic clock
+            mRecentTimeDeltaNext = -1;                  // reset saved values
+            return;
+        }
+
+        val nowNsec = System.nanoTime()
+        var curDeltaSec = (nowNsec - mPrevFrameWhenNsec) / NANOS_PER_SECOND
+        if (curDeltaSec > MAX_FRAME_DELTA_SEC) {
+            // We went to sleep for an extended period.  Cap it at a reasonable limit.
+            Log.d(TAG, "delta time was $curDeltaSec, capping at $MAX_FRAME_DELTA_SEC")
+            curDeltaSec = MAX_FRAME_DELTA_SEC
+        }
+        var deltaSec: Double
+
+        if (FRAME_RATE_SMOOTHING) {
+            if (mRecentTimeDeltaNext < 0) {
+                // first time through, fill table with current value
+                for (i in 0 until RECENT_TIME_DELTA_COUNT) {
+                    mRecentTimeDelta[i] = curDeltaSec
+                }
+                mRecentTimeDeltaNext = 0
+            }
+            mRecentTimeDelta[mRecentTimeDeltaNext] = curDeltaSec
+            mRecentTimeDeltaNext = (mRecentTimeDeltaNext + 1) % RECENT_TIME_DELTA_COUNT
+            deltaSec = 0.0
+            for (i in 0 until RECENT_TIME_DELTA_COUNT) {
+                deltaSec += mRecentTimeDelta[i]
+            }
+            deltaSec /= RECENT_TIME_DELTA_COUNT.toDouble()
+        } else {
+            deltaSec = curDeltaSec
+        }
+
         for (i in grid.indices) {
             for (j in grid.indices) {
                 grid[i][j]!!.clear()
@@ -133,11 +203,16 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         }
 
         for (b in boids.indices) {
-            boids[b].step(newBoids, neigbours[b], distances[b], target)
+            boids[b].step(deltaSec, newBoids, neigbours[b], distances[b], targets)
         }
+        Log.i(TAG, "calculateScene: delta - $deltaSec")
+        mPrevFrameWhenNsec = nowNsec
     }
 
     override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
+        mPrevFrameWhenNsec = 0
+
+
         this.width = width
         this.height = height
         ratio = width.toFloat() / height
@@ -157,14 +232,16 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceCreated(gl: GL10, config: EGLConfig?) {
-        val size = Preferences.boidsSize / 260f
-        val boidsColor = Preferences.boidsColor
+        frameCounter = 0
+
+        val size = Config.boidsSize / 260f
+        val boidsColor = Config.boidsColor
         Boid.initModel(size, boidsColor)
-        val backgroundColor = Preferences.backgroundColor
+        val backgroundColor = Config.backgroundColor
         r = Color.red(backgroundColor) / 255f
         g = Color.green(backgroundColor) / 255f
         b = Color.blue(backgroundColor) / 255f
-        val count = Preferences.boidsCount
+        val count = Config.boidsCount
         boids = Array(count) { Boid() }
         newBoids = Array(count) { Boid() }
         distances = Array(boids.size) { FloatArray(boids.size) }
@@ -184,27 +261,18 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         gl.glDisable(GL10.GL_DITHER)
     }
 
-    fun actionDown(x: Float, y: Float, size : Float) {
-        val relx = (x - width / 2f) / width * (ratio * DISTANCE) * 1.8f
-        val rely = (height / 2f - y) / height * DISTANCE * 1.8f
-
-        target.x = relx
-        target.y = rely
-
-
-        Log.d("ACTION", "onActionDown, $relx, $rely")
-
-//        for (boid in boids) {
-//            boid.velocity.x = relx - boid.location.x
-//            boid.velocity.y = rely - boid.location.y
-//            boid.velocity.z = 0 - boid.location.z
-//            boid.velocity.copyFrom(tempVector.copyFrom(boid.velocity).normalize())
-//        }
-    }
-
-    fun actionUp() {
-        Log.d("ACTION", "onActionUp")
-        target.x = 1000f
-        target.y = 1000f
+    fun onTouch(array: SparseArray<Vector>) {
+        var i = 0
+        array.forEach { key, vector ->
+            targets[i].x = (vector.x - width / 2f) / width * (ratio * DISTANCE) * 0.9f
+            targets[i].y = (height / 2f - vector.y) / height * DISTANCE * 0.9f
+            targets[i].z = vector.z
+            i++
+        }
+        for (j in i until targets.size) {
+            targets[j].x = 1000f
+            targets[j].y = 1000f
+            targets[j].z = 0f
+        }
     }
 }

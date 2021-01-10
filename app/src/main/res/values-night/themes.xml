@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Boids2D" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Boids2D" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
@@ -15,6 +15,12 @@
 
         <item name="alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
         <item name="android:alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
+
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
     </style>
 
     <style name="dialog_full_screen" parent="Theme.AppCompat.DayNight.Dialog">
@@ -27,7 +33,9 @@
 
         <item name="android:colorControlNormal">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
+
         <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@style/NoAnimation</item>
@@ -35,6 +43,9 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
     </style>
 
     <style name="NoAnimation" parent="@android:style/Animation.Activity">

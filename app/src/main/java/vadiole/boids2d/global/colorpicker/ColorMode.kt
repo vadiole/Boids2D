@@ -40,9 +40,9 @@ enum class ColorMode {
             ))
     };
 
-    abstract internal val channels: List<Channel>
+    internal abstract val channels: List<Channel>
 
-    abstract internal fun evaluateColor(channels: List<Channel>): Int
+    internal abstract fun evaluateColor(channels: List<Channel>): Int
 
     internal data class Channel(val nameResourceId: Int,
                                 val min: Int, val max: Int,

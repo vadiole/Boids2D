@@ -5,8 +5,9 @@
     <string name="settings_size_of_particles">Boids size</string>
     <string name="settings_color_boids">Boids color</string>
     <string name="settings_color_background">Background color</string>
-
-    <string name="tutorial_settings">Double tap to open settings</string>
+    <string name="settings_made_by" translatable="false">made with \u2661 by @vadiole</string>
+    <string name="tutorial_settings_open">Double tap to open settings</string>
+    <string name="tutorial_settings_close">You can swipe up to close settings</string>
 
 
     <!--    color picker-->
@@ -21,4 +22,7 @@
     <string name="picker_channel_hue">H</string>
     <string name="picker_channel_saturation">S</string>
     <string name="picker_channel_value">V</string>
+
+    <!--    errors-->
+    <string name="error_google_play">Cannot open: neither Google Play nor web browser installed</string>
 </resources>

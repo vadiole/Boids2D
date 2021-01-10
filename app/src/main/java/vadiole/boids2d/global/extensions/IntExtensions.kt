@@ -2,7 +2,7 @@ package vadiole.boids2d.global.extensions
 
 import android.content.res.Resources
 
-val Int.dp: Int
+val Int.toDp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-val Int.px: Int
+val Int.toPx: Int
     get() = (this * Resources.getSystem().displayMetrics.density).toInt()

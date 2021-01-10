@@ -10,8 +10,11 @@ import android.graphics.Point
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -19,6 +22,37 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import vadiole.boids2d.BuildConfig
+
+
+fun Fragment.hideSystemUI() = with(requireActivity().window) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        setDecorFitsSystemWindows(false)
+        insetsController?.let {
+            it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+            it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    } else {
+        @Suppress("DEPRECATION")
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+    }
+}
+
+fun Fragment.showSystemUI() = with(requireActivity().window) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        setDecorFitsSystemWindows(true)
+        insetsController?.show(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+    } else {
+        @Suppress("DEPRECATION")
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    }
+}
 
 
 fun Fragment.launchOrDownloadApp(appId: String, errorMessage: Int) {
@@ -37,9 +71,12 @@ fun Fragment.openGooglePlay(appId: String, errorMessage: Int) {
         `package` = ("com.android.vending")
     }
 
-    activity?.let {
-        if (gplayIntent.resolveActivity(it.packageManager) != null) startActivity(gplayIntent)
-        else openUrl(appUrl, errorMessage)
+    try {
+        activity?.let {
+            startActivity(gplayIntent)
+        }
+    } catch (e: Exception) {
+        openUrl(appUrl, errorMessage)
     }
 }
 
@@ -62,8 +99,11 @@ fun Fragment.openUrl(url: String, errorMessage: Int) {
         val webIntent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(url.trim().replace(" ", "+").toLowerCase())
         }
-        if (webIntent.resolveActivity(it.packageManager) != null) startActivity(webIntent)
-        else Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+        try {
+            startActivity(webIntent)
+        } catch (e: Exception) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 }
 
@@ -150,3 +190,4 @@ fun Fragment.canRequestPermissionAgain(permission: String): Boolean {
 fun Fragment.requireAppContext(): Context {
     return requireContext().applicationContext
 }
+

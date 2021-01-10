@@ -6,7 +6,8 @@
     <string name="settings_size_of_particles">Размер</string>
     <string name="settings_color_boids">Цвет частиц</string>
     <string name="settings_color_background">Цвет фона</string>
-    <string name="tutorial_settings">Двойной тап открывает настройки</string>
+    <string name="tutorial_settings_open">Двойной тап открывает настройки</string>
+    <string name="tutorial_settings_close">Свайп вверх закрывает настройки</string>
     <string name="action_ok">ОК</string>
     <string name="action_cancel">Отмена</string>
     <string name="picker_channel_alpha">A</string>
@@ -16,4 +17,5 @@
     <string name="picker_channel_hue">О</string>
     <string name="picker_channel_saturation">Н</string>
     <string name="picker_channel_value">Я</string>
+    <string name="error_google_play">Невозможно открыть: ни Google Play, ни веб браузер не\u00A0установлены</string>
 </resources>

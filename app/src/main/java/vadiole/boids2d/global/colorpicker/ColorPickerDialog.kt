@@ -2,15 +2,17 @@ package vadiole.boids2d.global.colorpicker
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.annotation.ColorInt
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.fragment.app.DialogFragment
 import vadiole.boids2d.R
+import vadiole.boids2d.base.BaseDialog
 import kotlin.properties.Delegates
 
-class ColorPickerDialog : DialogFragment() {
+class ColorPickerDialog : BaseDialog() {
 
     companion object {
         private const val ArgInitialColor = "arg_initial_color"
@@ -66,7 +68,7 @@ class ColorPickerDialog : DialogFragment() {
             return this
         }
 
-        fun create(): ColorPickerDialog {
+        fun build(): ColorPickerDialog {
             val fragment = newInstance(initialColor, colorMode)
             fragment.listener = listener
             return fragment
@@ -101,13 +103,21 @@ class ColorPickerDialog : DialogFragment() {
         })
 
         return AlertDialog.Builder(
-            ContextThemeWrapper(
-                context,
-                R.style.Theme_AppCompat_Dialog_Alert
-            )
+            ContextThemeWrapper(context, R.style.Theme_AppCompat_Dialog_Alert)
         )
             .setView(pickerView)
-            .create()
+            .create().apply {
+                setOnShowListener {
+                with(dialog!!.window!!) {
+                    clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+
+                    //Update the WindowManager with the new attributes (no nicer way I know of to do this)..
+                    val wm =
+                        requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                    wm.updateViewLayout(decorView, attributes)
+                }
+            }
+            }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

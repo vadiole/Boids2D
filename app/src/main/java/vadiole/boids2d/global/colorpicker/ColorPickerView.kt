@@ -2,6 +2,7 @@ package vadiole.boids2d.global.colorpicker
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -46,7 +47,7 @@ internal class ColorPickerView : RelativeLayout {
 
         val seekbarChangeListener: () -> Unit = {
             currentColor = colorMode.evaluateColor(channelViews.map { it.channel })
-            colorView.setBackgroundColor(currentColor)
+            colorView.background = ColorDrawable(currentColor)
         }
 
         val channelContainer = findViewById<ViewGroup>(R.id.channel_container)
