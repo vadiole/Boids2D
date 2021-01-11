@@ -14,6 +14,7 @@ import androidx.core.view.GestureDetectorCompat
 import vadiole.boids2d.base.BaseDialog
 import vadiole.boids2d.boids.BoidsGLSurfaceView
 import vadiole.boids2d.boids.BoidsRenderer
+import vadiole.boids2d.global.extensions.findDialogByTag
 import vadiole.boids2d.global.extensions.hide
 import vadiole.boids2d.global.extensions.hideSystemUI
 
@@ -53,9 +54,14 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
         }
         mDetector = GestureDetectorCompat(this, MyGestureListener { event ->
             tutorialText.hide()
-            Log.i(TAG, "show settings")
-            SettingsDialog.newInstance(event.rawX, event.rawY)
-                .show(supportFragmentManager, "settings")
+            with(supportFragmentManager) {
+                val dialog = findDialogByTag("settings") ?: SettingsDialog.newInstance(
+                    event.rawX,
+                    event.rawY
+                )
+
+                if (!dialog.isAdded) dialog.show(this, "settings")
+            }
         })
     }
 
@@ -71,7 +77,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
     }
 
     override fun onBackPressed() {
-        if ((supportFragmentManager.findFragmentByTag("settings") as BaseDialog?)?.onBackPressed() == true) return
+        if ((supportFragmentManager.findDialogByTag("settings") as BaseDialog?)?.onBackPressed() == true) return
         super.onBackPressed()
     }
 

@@ -4,7 +4,11 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
+import android.app.WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +27,7 @@ import vadiole.boids2d.global.extensions.toPx
 import vadiole.boids2d.global.extensions.withCircularAnimation
 import vadiole.boids2d.global.onclick.onClick
 import vadiole.boids2d.global.viewbinding.viewBinding
+import vadiole.boids2d.wallpaper.BoidsWallpaperService
 import kotlin.math.abs
 
 
@@ -31,6 +36,7 @@ class SettingsDialog : BaseDialog() {
     private var listener: OnDialogInteractionListener? = null
     private lateinit var mDetector: GestureDetectorCompat
     private var isNeedApply = false
+    private var isExitAnimateRun = false
 
     private var animPointX = 0f
     private var animPointY = 0f
@@ -95,6 +101,13 @@ class SettingsDialog : BaseDialog() {
         with(binding) {
             viewBoidsColor.setImageDrawable(ColorDrawable(Config.boidsColor))
             viewBackgroundColor.setImageDrawable(ColorDrawable(Config.backgroundColor))
+
+            settingsSetWallpaper.onClick {
+                val component = ComponentName(requireContext(), BoidsWallpaperService::class.java)
+                val intent = Intent(ACTION_CHANGE_LIVE_WALLPAPER)
+                intent.putExtra(EXTRA_LIVE_WALLPAPER_COMPONENT, component)
+                startActivity(intent)
+            }
 
             sliderBoidsCount.apply {
                 max = Config.devicePerformance.getMaxBoidsSeekbar()
@@ -214,15 +227,17 @@ class SettingsDialog : BaseDialog() {
     override fun getTheme(): Int = R.style.dialog_full_screen
 
     override fun onBackPressed(): Boolean {
-        if (isResumed) {
+        if (isResumed && !isExitAnimateRun) {
             dialog?.window?.decorView?.let {
                 if (isNeedApply) listener?.onSettingsAction()
+                isExitAnimateRun = true
                 it.withCircularAnimation(View.INVISIBLE, 400L, animPointX, animPointY) {
-                    if (it.isAttachedToWindow) it.performHapticFeedback(VIRTUAL_KEY)
+                    if (it.isAttachedToWindow) it.performHapticFeedback(KEYBOARD_TAP)
                     if (isAdded) dismiss()
+                    isExitAnimateRun = false
                 }
                 it.alpha = 1.0f
-                it.animate().alpha(0.0f).setStartDelay(100L).setDuration(400L).start()
+                it.animate().alpha(0.0f).setStartDelay(50L).setDuration(300L).start()
 
                 return true
             }
@@ -246,29 +261,12 @@ class SettingsDialog : BaseDialog() {
             val y1 = e1.y
             val x2 = e2.x
             val y2 = e2.y
-            if (abs(x1 - x2) < 100.toPx && y2 < y1) {
+            if (abs(x1 - x2) < 80.toPx && y1 - y2 > 100.toPx) {
                 onFlingUp.invoke()
                 return true
             }
             return false
         }
-//
-//        override fun onScroll(
-//            e1: MotionEvent,
-//            e2: MotionEvent,
-//            distanceX: Float,
-//            distanceY: Float
-//        ): Boolean {
-//            val x1 = e1.x
-//            val y1 = e1.y
-//            val x2 = e2.x
-//            val y2 = e2.y
-//            if (abs(y1 - y2) < 300.toPx && x2 > x1) {
-//                onFlingUp.invoke()
-//                return true
-//            }
-//            return false
-//        }
     }
 
     companion object {

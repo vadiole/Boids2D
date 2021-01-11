@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Boids 2D</string>
     <string name="settings">Настройки</string>
+    <string name="settings_set_live_wallpaper">Установить как живые обои</string>
     <string name="settings_count_of_particles">Количество</string>
     <string name="settings_size_of_particles">Размер</string>
     <string name="settings_color_boids">Цвет частиц</string>

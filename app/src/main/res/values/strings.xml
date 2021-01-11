@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Boids 2D</string>
     <string name="settings">Settings</string>
+    <string name="settings_set_live_wallpaper">Set as live wallpaper</string>
     <string name="settings_count_of_particles">Boids count</string>
     <string name="settings_size_of_particles">Boids size</string>
     <string name="settings_color_boids">Boids color</string>

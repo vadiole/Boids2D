@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Boids 2D</string>
     <string name="settings">Налаштування</string>
+    <string name="settings_set_live_wallpaper">Встановити як живі шпалери</string>
     <string name="settings_count_of_particles">Кількість</string>
     <string name="settings_size_of_particles">Розмір</string>
     <string name="settings_color_boids">Колір частинок</string>

@@ -16,6 +16,7 @@
         android:id="@+id/settings_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:minHeight="56dp"
         android:paddingStart="8dp"
@@ -41,16 +42,51 @@
         app:layout_constraintTop_toTopOf="@+id/settings_title"
         app:srcCompat="@drawable/abc_vector_test" />
 
+
+    <TextView
+        android:id="@+id/settings_set_wallpaper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="60dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/settings_set_live_wallpaper"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_title" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="21dp"
+        android:background="@color/divider"
+        app:layout_constraintTop_toBottomOf="@id/settings_set_wallpaper"
+        tools:layout_editor_absoluteX="21dp" />
+
+
     <TextView
         android:id="@+id/boids_count_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:paddingStart="24dp"
         android:paddingTop="8dp"
         android:paddingEnd="24dp"
         android:text="@string/settings_count_of_particles"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
-        app:layout_constraintTop_toBottomOf="@id/settings_title" />
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -145,7 +181,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/divider1"
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginStart="21dp"
@@ -175,7 +211,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium.Boids.Primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider1" />
+        app:layout_constraintTop_toBottomOf="@id/divider2" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/view_boids_color"

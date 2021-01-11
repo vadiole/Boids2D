@@ -35,7 +35,6 @@ fun View.withCircularAnimation(
     y: Float = pivotY,
     onAnimationEnd: () -> Unit = {}
 ) {
-
     postDelayed(50) {
         val isHide = _visibility == View.INVISIBLE
 
