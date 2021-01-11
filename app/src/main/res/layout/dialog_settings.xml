@@ -122,7 +122,7 @@
             android:gravity="center"
             android:paddingStart="8dp"
             android:paddingEnd="24dp"
-            android:text="1000"
+            tools:text="1000"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="@android:color/white" />
     </LinearLayout>
