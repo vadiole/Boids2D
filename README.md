@@ -2,6 +2,7 @@
 Boids 2D is a simple simulation of flock behavior
 
 Features:
+ - live wallpaper
  - flock simulation
  - change size of boids
  - change count of boids
