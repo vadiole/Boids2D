@@ -10,18 +10,31 @@
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:colorAccent">@color/white</item>
+        у<!-- Surface-->
+        <item name="colorOnSurface">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
         <!-- Customize your theme here. -->
 
-        <item name="alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
-        <item name="android:alertDialogTheme">@style/Theme.AppCompat.Dialog.Alert</item>
 
+        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog.Alert.Boids
+        </item>
+        <item name="android:alertDialogTheme">
+            @style/Theme.AppCompat.DayNight.Dialog.Alert.Boids
+        </item>
+        <item name="buttonBarButtonStyle">@style/Widget.AppCompat.Button.ButtonBar.AlertDialog
+        </item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
 
-        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded
+        </item>
         <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+
+        <item name="android:fontFamily">@font/hkgrotesk</item>
+        <item name="fontFamily">@font/hkgrotesk</item>
     </style>
 
     <style name="dialog_full_screen" parent="Theme.AppCompat.DayNight.Dialog">
@@ -46,7 +59,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
 
-        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded</item>
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background_rounded
+        </item>
         <item name="selectableItemBackground">@drawable/selectable_item_background_rounded</item>
     </style>
 

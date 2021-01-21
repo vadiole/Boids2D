@@ -1,6 +1,7 @@
 package vadiole.boids2d.base
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.content.DialogInterface
 import android.os.Build
@@ -10,8 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.google.firebase.analytics.FirebaseAnalytics
 
 abstract class BaseDialog : DialogFragment(), View.OnClickListener, OnFragmentBackPressed {
+    protected var analytics: FirebaseAnalytics? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
             override fun onBackPressed() = requireActivity().onBackPressed()
@@ -51,4 +55,9 @@ abstract class BaseDialog : DialogFragment(), View.OnClickListener, OnFragmentBa
     override fun onClick(v: View?) {}
 
     override fun onBackPressed(): Boolean = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        analytics = FirebaseAnalytics.getInstance(context);
+    }
 }

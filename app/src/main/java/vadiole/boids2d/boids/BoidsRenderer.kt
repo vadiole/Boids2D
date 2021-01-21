@@ -9,6 +9,7 @@ import android.util.SparseArray
 import android.view.Surface
 import android.view.WindowManager
 import androidx.core.util.forEach
+import com.google.firebase.analytics.FirebaseAnalytics
 import vadiole.boids2d.Config
 import vadiole.boids2d.model.Boid
 import vadiole.boids2d.model.Vector
@@ -205,7 +206,7 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         for (b in boids.indices) {
             boids[b].step(deltaSec, newBoids, neigbours[b], distances[b], targets)
         }
-        Log.i(TAG, "calculateScene: delta - $deltaSec")
+        Log.v(TAG, "calculateScene: delta - $deltaSec")
         mPrevFrameWhenNsec = nowNsec
     }
 
@@ -234,9 +235,9 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(gl: GL10, config: EGLConfig?) {
         frameCounter = 0
 
-        val size = Config.boidsSize / 260f
+        val size = Config.boidsSize
         val boidsColor = Config.boidsColor
-        Boid.initModel(size, boidsColor)
+        Boid.initModel(size / 260f, boidsColor)
         val backgroundColor = Config.backgroundColor
         r = Color.red(backgroundColor) / 255f
         g = Color.green(backgroundColor) / 255f
@@ -259,11 +260,20 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST)
         gl.glShadeModel(GL10.GL_SMOOTH)
         gl.glDisable(GL10.GL_DITHER)
+
+        FirebaseAnalytics.getInstance(context.applicationContext).run {
+            setUserProperty("boids_color", String.format("#%06X", 0xFFFFFF and boidsColor))
+            setUserProperty("background_color", String.format("#%06X", 0xFFFFFF and backgroundColor))
+            setUserProperty("boids_count", count.toString())
+            setUserProperty("boids_size", size.toString())
+        }
     }
 
     fun onTouch(array: SparseArray<Vector>) {
         var i = 0
         array.forEach { key, vector ->
+            if (i >= targets.size) return@forEach
+
             targets[i].x = (vector.x - width / 2f) / width * (ratio * DISTANCE) * 0.9f
             targets[i].y = (height / 2f - vector.y) / height * DISTANCE * 0.9f
             targets[i].z = vector.z

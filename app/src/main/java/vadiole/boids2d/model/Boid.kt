@@ -195,7 +195,9 @@ class Boid {
                 put(colors)
                 position(0)
             }
-            mIndexBuffer = ByteBuffer.allocateDirect(indices.size).apply {
+            vbb = ByteBuffer.allocateDirect(indices.size)
+            vbb.order(ByteOrder.nativeOrder())
+            mIndexBuffer = vbb.apply {
                 put(indices)
                 position(0)
             }

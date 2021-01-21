@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 
 private class DialogFragmentViewBindingProperty<F : DialogFragment, T : ViewBinding>(
-        viewBinder: (F) -> T
+    viewBinder: (F) -> T
 ) : ViewBindingProperty<F, T>(viewBinder) {
 
     override fun getLifecycleOwner(thisRef: F): LifecycleOwner {
@@ -22,7 +22,7 @@ private class DialogFragmentViewBindingProperty<F : DialogFragment, T : ViewBind
  */
 @JvmName("viewBindingDialogFragment")
 public fun <F : DialogFragment, T : ViewBinding> DialogFragment.dialogViewBinding(
-        viewBinder: (F) -> T
+    viewBinder: (F) -> T
 ): ViewBindingProperty<F, T> {
     return DialogFragmentViewBindingProperty(viewBinder)
 }
@@ -34,8 +34,8 @@ public fun <F : DialogFragment, T : ViewBinding> DialogFragment.dialogViewBindin
  */
 @JvmName("viewBindingDialogFragment")
 public inline fun <F : DialogFragment, T : ViewBinding> DialogFragment.dialogViewBinding(
-        crossinline vbFactory: (View) -> T,
-        crossinline viewProvider: (F) -> View
+    crossinline vbFactory: (View) -> T,
+    crossinline viewProvider: (F) -> View
 ): ViewBindingProperty<F, T> {
     return dialogViewBinding { fragment -> vbFactory(viewProvider(fragment)) }
 }
@@ -49,8 +49,8 @@ public inline fun <F : DialogFragment, T : ViewBinding> DialogFragment.dialogVie
 @Suppress("unused")
 @JvmName("viewBindingDialogFragment")
 public inline fun <T : ViewBinding> DialogFragment.dialogViewBinding(
-        crossinline vbFactory: (View) -> T,
-        @IdRes viewBindingRootId: Int
+    crossinline vbFactory: (View) -> T,
+    @IdRes viewBindingRootId: Int
 ): ViewBindingProperty<DialogFragment, T> {
     return dialogViewBinding(vbFactory) { fragment: DialogFragment ->
         fragment.dialog!!.window!!.decorView.findViewById(viewBindingRootId)

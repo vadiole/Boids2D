@@ -11,6 +11,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
+import vadiole.boids2d.SettingsDialog.Companion.BACK_EVENT_TYPE
+import vadiole.boids2d.SettingsDialog.Companion.EVENT_BACK_NAVIGATION
 import vadiole.boids2d.base.BaseDialog
 import vadiole.boids2d.boids.BoidsGLSurfaceView
 import vadiole.boids2d.boids.BoidsRenderer
@@ -72,12 +76,16 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
 
     override fun onResume() {
         super.onResume()
-//        hideSystemUI()
         glSurfaceView?.onResume()
     }
 
     override fun onBackPressed() {
-        if ((supportFragmentManager.findDialogByTag("settings") as BaseDialog?)?.onBackPressed() == true) return
+        if ((supportFragmentManager.findDialogByTag("settings") as BaseDialog?)?.onBackPressed() == true) {
+            FirebaseAnalytics.getInstance(this).logEvent(SettingsDialog.BACK_EVENT) {
+                param(BACK_EVENT_TYPE, EVENT_BACK_NAVIGATION)
+            }
+            return
+        }
         super.onBackPressed()
     }
 
@@ -101,7 +109,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
         glSurfaceView = BoidsGLSurfaceView(this).apply {
             setEGLConfigChooser(8, 8, 8, 8, 16, 0)
             setRenderer(BoidsRenderer(this@MainActivity))
-            setOnTouchListener { v, event ->
+            setOnTouchListener { _, event ->
                 mDetector.onTouchEvent(event)
             }
         }

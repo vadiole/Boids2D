@@ -13,7 +13,7 @@
         android:layout_marginStart="24dp"
         android:gravity="center"
         android:minWidth="24dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         tools:text="R" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_marginEnd="24dp"
         android:gravity="center"
         android:minWidth="30dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         tools:text="255" />
 
     <SeekBar

@@ -19,13 +19,13 @@ enum class DevicePerformance(val code: String) {
         HIGH -> 80
     }
 
-    fun getFireworksParticlesCount() = when(this) {
+    fun getFireworksParticlesCount() = when (this) {
         LOW -> 50
         MEDIUM -> 60
         HIGH -> 100
     }
 
-    fun getFireworksFallParticlesCount() = when(this) {
+    fun getFireworksFallParticlesCount() = when (this) {
         LOW -> 20
         MEDIUM -> 30
         HIGH -> 40
@@ -51,7 +51,7 @@ enum class DevicePerformance(val code: String) {
             }
 
             val androidVersion = Build.VERSION.SDK_INT
-            val cpuCount: Int = Runtime.getRuntime().availableProcessors();
+            val cpuCount: Int = Runtime.getRuntime().availableProcessors()
             val memoryClass =
                 (App.context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
             val result =

@@ -6,15 +6,21 @@
 
     <Button
         android:id="@+id/negative_button"
-        style="?attr/buttonBarPositiveButtonStyle"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog.Boids"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/action_cancel" />
+        android:fontFamily="@font/hkgrotesk"
+        android:minWidth="64dp"
+        android:text="@string/action_cancel"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/positive_button"
-        style="?attr/buttonBarPositiveButtonStyle"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog.Boids"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/action_ok" />
+        android:fontFamily="@font/hkgrotesk"
+        android:minWidth="64dp"
+        android:text="@string/action_ok"
+        android:textAllCaps="false" />
 </LinearLayout>

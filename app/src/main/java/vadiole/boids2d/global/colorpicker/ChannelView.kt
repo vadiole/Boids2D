@@ -12,7 +12,8 @@ import vadiole.boids2d.R
 internal class ChannelView(
     val channel: ColorMode.Channel,
     @ColorInt color: Int,
-    context: Context) : RelativeLayout(context) {
+    context: Context
+) : RelativeLayout(context) {
 
     internal var listener: (() -> Unit)? = null
 
@@ -20,8 +21,10 @@ internal class ChannelView(
         channel.progress = channel.extractor.invoke(color)
 
         if (channel.progress < channel.min || channel.progress > channel.max) {
-            throw IllegalArgumentException("Initial progress for channel: ${channel.javaClass.simpleName}"
-                    + " must be between ${channel.min} and ${channel.max}.")
+            throw IllegalArgumentException(
+                "Initial progress for channel: ${channel.javaClass.simpleName}"
+                        + " must be between ${channel.min} and ${channel.max}."
+            )
         }
 
         val rootView = inflate(context, R.layout.channel_row, this)
@@ -38,9 +41,9 @@ internal class ChannelView(
         seekbar.max = channel.max
         seekbar.progress = channel.progress
         seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekbar: SeekBar?) { }
+            override fun onStartTrackingTouch(seekbar: SeekBar?) {}
 
-            override fun onStopTrackingTouch(seekbar: SeekBar?) { }
+            override fun onStopTrackingTouch(seekbar: SeekBar?) {}
 
             override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean) {
                 channel.progress = progress

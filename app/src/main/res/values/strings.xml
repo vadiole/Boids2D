@@ -26,4 +26,5 @@
 
     <!--    errors-->
     <string name="error_google_play">Cannot open: neither Google Play nor web browser installed</string>
+    <string name="error_live_wallpaper">Can\'t start live wallpaper preview, try setting manually in screen settings</string>
 </resources>

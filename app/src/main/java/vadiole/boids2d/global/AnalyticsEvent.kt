@@ -1,0 +1,11 @@
+package vadiole.boids2d.global
+
+enum class AnalyticsEvent {
+    OPEN_SETTINGS,
+    CLOSE_SETTINGS_SWIPE,
+    CLOSE_SETTINGS_BUTTON,
+    CLOSE_SETTINGS_NAVIGATION,
+    OPEN_DEVELOPER_PAGE,
+    FIREWORKS,
+    OPEN_SET_WALLPAPER,
+}

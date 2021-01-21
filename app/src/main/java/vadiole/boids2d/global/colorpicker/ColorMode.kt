@@ -15,14 +15,16 @@ enum class ColorMode {
         )
 
         override fun evaluateColor(channels: List<Channel>): Int = Color.argb(
-            channels[0].progress, channels[1].progress, channels[2].progress, channels[3].progress)
+            channels[0].progress, channels[1].progress, channels[2].progress, channels[3].progress
+        )
     },
 
     RGB {
         override val channels: List<Channel> = ARGB.channels.drop(1)
 
         override fun evaluateColor(channels: List<Channel>): Int = Color.rgb(
-            channels[0].progress, channels[1].progress, channels[2].progress)
+            channels[0].progress, channels[1].progress, channels[2].progress
+        )
     },
 
     HSV {
@@ -37,19 +39,23 @@ enum class ColorMode {
                 (channels[0].progress).toFloat(),
                 (channels[1].progress / 100.0).toFloat(),
                 (channels[2].progress / 100.0).toFloat()
-            ))
+            )
+        )
     };
 
     internal abstract val channels: List<Channel>
 
     internal abstract fun evaluateColor(channels: List<Channel>): Int
 
-    internal data class Channel(val nameResourceId: Int,
-                                val min: Int, val max: Int,
-                                val extractor: (color: Int) -> Int,
-                                var progress: Int = 0)
+    internal data class Channel(
+        val nameResourceId: Int,
+        val min: Int, val max: Int,
+        val extractor: (color: Int) -> Int,
+        var progress: Int = 0
+    )
 
     companion object {
-        @JvmStatic fun fromName(name: String?) = values().find { it.name == name } ?: ColorMode.RGB
+        @JvmStatic
+        fun fromName(name: String?) = values().find { it.name == name } ?: ColorMode.RGB
     }
 }

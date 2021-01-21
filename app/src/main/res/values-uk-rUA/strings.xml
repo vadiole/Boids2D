@@ -19,4 +19,6 @@
     <string name="picker_channel_saturation">Н</string>
     <string name="picker_channel_value">Я</string>
     <string name="error_google_play">Неможливо відкрити: ні Google Play, ні веб браузер не встановлені</string>
+    <string name="error_live_wallpaper">Не вийшло відкрити попередій перегляд живих шпалер, спробуйте встановити вручну в налаштуваннях екрану</string>
+
 </resources>

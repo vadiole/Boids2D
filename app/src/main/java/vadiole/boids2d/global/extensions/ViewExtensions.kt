@@ -23,7 +23,6 @@ fun View.invisible() {
 }
 
 
-
 /** @hide */
 @IntDef(View.VISIBLE, View.INVISIBLE)
 annotation class Visibility
@@ -36,13 +35,21 @@ fun View.withCircularAnimation(
     onAnimationEnd: () -> Unit = {}
 ) {
     postDelayed(50) {
+        if (!this.isAttachedToWindow) return@postDelayed
+
         val isHide = _visibility == View.INVISIBLE
 
         val viewRadius = getMaxRadius(x, y)
         val startRadius = if (isHide) viewRadius else 0f
         val endRadius = if (isHide) 0f else viewRadius
 
-        val anim = ViewAnimationUtils.createCircularReveal(this, x.toInt(), y.toInt(), startRadius, endRadius).apply {
+        val anim = ViewAnimationUtils.createCircularReveal(
+            this,
+            x.toInt(),
+            y.toInt(),
+            startRadius,
+            endRadius
+        ).apply {
             duration = _duration
             interpolator = FastOutSlowInInterpolator()
             addListener(object : AnimatorListenerAdapter() {
@@ -72,7 +79,7 @@ fun View.getMaxRadius(x: Float = pivotX, y: Float = pivotY): Float {
     val radius2 = hypot(width - x, y)
     val radius3 = hypot(x, height - y)
     val radius4 = hypot(width - x, height - y)
-    return listOf(radius1, radius2, radius3, radius4).max()!!
+    return listOf(radius1, radius2, radius3, radius4).maxOrNull()!!
 }
 
 

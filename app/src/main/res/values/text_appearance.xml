@@ -1,43 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextAppearance.AppCompat.Small.Boids" parent="TextAppearance.AppCompat.Small">
-        <item name="android:fontFamily">@font/hkgrotesk</item>
-    </style>
 
-    <style name="TextAppearance.AppCompat.Medium.Boids" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:fontFamily">@font/hkgrotesk</item>
-    </style>
-
-
-    <style name="TextAppearance.AppCompat.Large.Boids" parent="TextAppearance.AppCompat.Large">
-        <item name="android:fontFamily">@font/hkgrotesk</item>
-    </style>
-
-
-    <style name="TextAppearance.AppCompat.Small.Boids.Primary" parent="TextAppearance.AppCompat.Small.Boids">
+    <style name="TextAppearance.AppCompat.Small.Boids.Primary" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/white</item>
     </style>
 
 
-    <style name="TextAppearance.AppCompat.Medium.Boids.Primary" parent="TextAppearance.AppCompat.Medium.Boids">
+    <style name="TextAppearance.AppCompat.Medium.Boids.Primary" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.Large.Boids.Primary" parent="TextAppearance.AppCompat.Large.Boids">
+    <style name="TextAppearance.AppCompat.Large.Boids.Primary" parent="TextAppearance.AppCompat.Large">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.Small.Boids.Secondary" parent="TextAppearance.AppCompat.Small.Boids">
+    <style name="TextAppearance.AppCompat.Small.Boids.Secondary" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/white_60</item>
     </style>
 
 
-    <style name="TextAppearance.AppCompat.Medium.Boids.Secondary" parent="TextAppearance.AppCompat.Medium.Boids">
+    <style name="TextAppearance.AppCompat.Medium.Boids.Secondary" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/white_60</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.Large.Boids.Secondary" parent="TextAppearance.AppCompat.Large.Boids">
+    <style name="TextAppearance.AppCompat.Large.Boids.Secondary" parent="TextAppearance.AppCompat.Large">
         <item name="android:textColor">@color/white_60</item>
     </style>
 </resources>
