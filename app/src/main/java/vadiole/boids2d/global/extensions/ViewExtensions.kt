@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.view.View
 import android.view.ViewAnimationUtils
+import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.core.view.postDelayed
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -87,3 +88,9 @@ fun View.absX() = IntArray(2).apply(::getLocationOnScreen)[0]
 
 fun View.absY() = IntArray(2).apply(::getLocationOnScreen)[1]
 
+
+fun View?.removeSelf() {
+    this ?: return
+    val parent = parent as? ViewGroup ?: return
+    parent.removeView(this)
+}

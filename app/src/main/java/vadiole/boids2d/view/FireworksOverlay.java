@@ -21,7 +21,6 @@ import vadiole.boids2d.global.extensions.IntExtensionsKt;
 public class FireworksOverlay extends View {
 
     private static final Paint[] paint;
-    private static Paint[] heartPaint;
     private final RectF rect = new RectF();
     private long lastUpdateTime;
     private boolean started;

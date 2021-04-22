@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Boids2D" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
@@ -19,13 +19,6 @@
         <!-- Customize your theme here. -->
 
 
-        <item name="alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog.Alert.Boids
-        </item>
-        <item name="android:alertDialogTheme">
-            @style/Theme.AppCompat.DayNight.Dialog.Alert.Boids
-        </item>
-        <item name="buttonBarButtonStyle">@style/Widget.AppCompat.Button.ButtonBar.AlertDialog
-        </item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
 
@@ -38,7 +31,7 @@
     </style>
 
     <style name="dialog_full_screen" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>

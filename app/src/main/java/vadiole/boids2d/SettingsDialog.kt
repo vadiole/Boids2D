@@ -27,12 +27,13 @@ import kotlinx.coroutines.delay
 import vadiole.boids2d.base.BaseDialog
 import vadiole.boids2d.databinding.DialogSettingsBinding
 import vadiole.boids2d.global.AnalyticsEvent
-import vadiole.boids2d.global.colorpicker.ColorMode
-import vadiole.boids2d.global.colorpicker.ColorPickerDialog
 import vadiole.boids2d.global.extensions.*
 import vadiole.boids2d.global.onclick.onClick
 import vadiole.boids2d.global.viewbinding.viewBinding
 import vadiole.boids2d.wallpaper.BoidsWallpaperService
+import vadiole.colorpicker.ColorModel
+import vadiole.colorpicker.ColorPickerDialog
+
 import kotlin.math.abs
 
 
@@ -190,27 +191,31 @@ class SettingsDialog : BaseDialog() {
 
         settingsBoidsColor.onClick {
             val picker = ColorPickerDialog.Builder()
-                .colorMode(ColorMode.RGB)
-                .initialColor(Config.boidsColor)
+                .setColorModel(ColorModel.HSV)
+                .setInitialColor(Config.boidsColor)
+                .setButtonOkText(R.string.action_ok)
+                .setButtonCancelText(R.string.action_cancel)
+                .setColorModelSwitchEnabled(true)
                 .onColorSelected { color ->
                     Config.boidsColor = color
                     viewBoidsColor.setImageDrawable(ColorDrawable(color))
                     isNeedApply = true
                 }
-                .build()
+                .create()
             picker.show(childFragmentManager, "boids_color")
 //                Toast.makeText(context, "Pick boids color", Toast.LENGTH_SHORT).show()
         }
         settingsBackgroundColor.onClick {
             val picker = ColorPickerDialog.Builder()
-                .colorMode(ColorMode.RGB)
-                .initialColor(Config.backgroundColor)
+                .setColorModel(ColorModel.HSV)
+                .setInitialColor(Config.backgroundColor)
+                .setColorModelSwitchEnabled(true)
                 .onColorSelected { color ->
                     Config.backgroundColor = color
                     viewBackgroundColor.setImageDrawable(ColorDrawable(color))
                     isNeedApply = true
                 }
-                .build()
+                .create()
             picker.show(childFragmentManager, "background_color")
 //                Toast.makeText(context, "Pick background color", Toast.LENGTH_SHORT).show()
         }
