@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="@color/translucent_background"
+    tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat"
+    >
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingTop="8dp"
+        android:paddingRight="24dp"
+        android:text="@string/settings_advanced_separation"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids.Primary"
+        />
+
+
+    <vadiole.boids2d.view.ValueSeekbar
+        android:id="@+id/settings_advanced_separation"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="24dp"
+        android:paddingRight="16dp"
+        app:max="20"
+        app:progress="10"
+        app:progressTint="@android:color/white"
+        app:textColor="@android:color/white"
+        app:thumbTint="@android:color/white"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingTop="16dp"
+        android:paddingRight="24dp"
+        android:text="@string/settings_advanced_alignment"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids.Primary"
+        />
+
+
+    <vadiole.boids2d.view.ValueSeekbar
+        android:id="@+id/settings_advanced_alignment"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="24dp"
+        android:paddingRight="16dp"
+        app:max="20"
+        app:progress="10"
+        app:progressTint="@android:color/white"
+        app:textColor="@android:color/white"
+        app:thumbTint="@android:color/white"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingTop="16dp"
+        android:paddingRight="24dp"
+        android:text="@string/settings_advanced_cohesion"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids.Primary"
+        />
+
+
+    <vadiole.boids2d.view.ValueSeekbar
+        android:id="@+id/settings_advanced_cohesion"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="24dp"
+        android:paddingRight="16dp"
+        app:max="20"
+        app:progress="10"
+        app:progressTint="@android:color/white"
+        app:textColor="@android:color/white"
+        app:thumbTint="@android:color/white"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="24dp"
+        android:paddingTop="16dp"
+        android:paddingRight="24dp"
+        android:text="@string/settings_advanced_target"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Boids.Primary"
+        />
+
+
+    <vadiole.boids2d.view.ValueSeekbar
+        android:id="@+id/settings_advanced_target"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="24dp"
+        android:paddingRight="16dp"
+        app:max="20"
+        app:progress="10"
+        app:progressTint="@android:color/white"
+        app:textColor="@android:color/white"
+        app:thumbTint="@android:color/white"
+        />
+
+
+</merge>

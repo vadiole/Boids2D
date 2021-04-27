@@ -2,19 +2,24 @@
     <string name="app_name">Boids 2D</string>
     <string name="settings">Settings</string>
     <string name="settings_set_live_wallpaper">Set as live wallpaper</string>
+    <string name="settings_color_background">Background color</string>
+    <string name="settings_color_boids">Boids color</string>
     <string name="settings_count_of_particles">Boids count</string>
     <string name="settings_size_of_particles">Boids size</string>
-    <string name="settings_color_boids">Boids color</string>
-    <string name="settings_color_background">Background color</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="settings_advanced_separation">Separation</string>
+    <string name="settings_advanced_alignment">Alignment</string>
+    <string name="settings_advanced_cohesion">Cohesion</string>
+    <string name="settings_advanced_target">Follow target</string>
     <string name="settings_made_by" translatable="false">made with \u2661 by @vadiole</string>
     <string name="tutorial_settings_open">Double tap to open settings</string>
     <string name="tutorial_settings_close">You can swipe up to close settings</string>
 
 
-    <!--    color picker-->
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
 
+    <!--    color picker-->
     <string name="picker_channel_alpha">A</string>
     <string name="picker_channel_red">R</string>
     <string name="picker_channel_green">G</string>
@@ -25,6 +30,6 @@
     <string name="picker_channel_value">V</string>
 
     <!--    errors-->
-    <string name="error_google_play">Cannot open: neither Google Play nor web browser installed</string>
-    <string name="error_live_wallpaper">Can\'t start live wallpaper preview, try setting manually in screen settings</string>
+    <string name="error_google_play">Failed to open: neither Google Play nor web browser installed</string>
+    <string name="error_live_wallpaper">Failed to start live wallpaper preview, try setting manually in launcher settings</string>
 </resources>

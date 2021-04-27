@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Boids 2D</string>
+    <string name="settings">Einstellungen</string>
+    <string name="settings_set_live_wallpaper">Als Live Wallpaper einstellen</string>
+    <string name="settings_color_background">Hintergrundfarbe</string>
+    <string name="settings_color_boids">Boids Farbe</string>
+    <string name="settings_count_of_particles">Anzahl von Boids</string>
+    <string name="settings_size_of_particles">Boids Größe</string>
+    <string name="settings_advanced">Fortgeschrittene</string>
+    <string name="settings_advanced_separation">Trennung</string>
+    <string name="settings_advanced_alignment">Ausrichtung</string>
+    <string name="settings_advanced_cohesion">Zusammenhalt</string>
+    <string name="settings_advanced_target">Gehen zum Ziel</string>
+    <string name="tutorial_settings_open">Tippen Sie zweimal auf, um die Einstellungen zu öffnen</string>
+    <string name="tutorial_settings_close">Sie können nach oben wischen, um die Einstellungen zu schließen</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="picker_channel_alpha">A.</string>
+    <string name="picker_channel_red">R.</string>
+    <string name="picker_channel_green">G</string>
+    <string name="picker_channel_blue">B.</string>
+    <string name="picker_channel_hue">H.</string>
+    <string name="picker_channel_saturation">S.</string>
+    <string name="picker_channel_value">V.</string>
+    <string name="error_google_play">Fehler beim Öffnen: Weder Google Play noch Webbrowser installiert</string>
+    <string name="error_live_wallpaper">Hintergrundvorschau konnte nicht gestartet werden. Versuchen Sie die manuelle Installation in den Einstellungen Ihres Startbildschirms</string>
+</resources>

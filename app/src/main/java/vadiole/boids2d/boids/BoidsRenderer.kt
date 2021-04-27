@@ -237,7 +237,12 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
         val size = Config.boidsSize
         val boidsColor = Config.boidsColor
-        Boid.initModel(size / 260f, boidsColor)
+        val separation = Config.userSeparation
+        val alignment = Config.userAlignment
+        val cohesion = Config.userCohesion
+        val target = Config.userTarget
+
+        Boid.initModel(size / 260f, boidsColor, separation, alignment, cohesion, target)
         val backgroundColor = Config.backgroundColor
         r = Color.red(backgroundColor) / 255f
         g = Color.green(backgroundColor) / 255f
@@ -266,12 +271,16 @@ class BoidsRenderer(private val context: Context) : GLSurfaceView.Renderer {
             setUserProperty("background_color", String.format("#%06X", 0xFFFFFF and backgroundColor))
             setUserProperty("boids_count", count.toString())
             setUserProperty("boids_size", size.toString())
+            setUserProperty("separation", separation.toString())
+            setUserProperty("alignment", alignment.toString())
+            setUserProperty("cohesion", cohesion.toString())
+            setUserProperty("target", target.toString())
         }
     }
 
     fun onTouch(array: SparseArray<Vector>) {
         var i = 0
-        array.forEach { key, vector ->
+        array.forEach { _, vector ->
             if (i >= targets.size) return@forEach
 
             targets[i].x = (vector.x - width / 2f) / width * (ratio * DISTANCE) * 0.9f

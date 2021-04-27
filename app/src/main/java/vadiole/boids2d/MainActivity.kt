@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.isGone
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import vadiole.boids2d.SettingsDialog.Companion.BACK_EVENT_TYPE
@@ -19,7 +20,6 @@ import vadiole.boids2d.base.BaseDialog
 import vadiole.boids2d.boids.BoidsGLSurfaceView
 import vadiole.boids2d.boids.BoidsRenderer
 import vadiole.boids2d.global.extensions.findDialogByTag
-import vadiole.boids2d.global.extensions.hide
 import vadiole.boids2d.global.extensions.hideSystemUI
 
 
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
             setContentView(this)
         }
         mDetector = GestureDetectorCompat(this, MyGestureListener { event ->
-            tutorialText.hide()
+            tutorialText.isGone = true
             with(supportFragmentManager) {
                 val dialog = findDialogByTag("settings") ?: SettingsDialog.newInstance(
                     event.rawX,
@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity(), SettingsDialog.OnDialogInteractionList
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
-//        super.onWindowFocusChanged(hasFocus)
         hideSystemUI()
     }
 

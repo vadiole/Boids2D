@@ -1,7 +1,5 @@
 package vadiole.boids2d
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.WallpaperManager
@@ -16,24 +14,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.HapticFeedbackConstants.*
-import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.graphics.drawable.AnimatedStateListDrawableCompat
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import dev.chrisbanes.insetter.setEdgeToEdgeSystemUiFlags
 import kotlinx.coroutines.delay
 import vadiole.boids2d.base.BaseDialog
+import vadiole.boids2d.databinding.AdvancedSettingsBinding
 import vadiole.boids2d.databinding.DialogSettingsBinding
 import vadiole.boids2d.global.AnalyticsEvent
 import vadiole.boids2d.global.extensions.*
 import vadiole.boids2d.global.onclick.onClick
-import vadiole.boids2d.global.viewbinding.viewBinding
 import vadiole.boids2d.wallpaper.BoidsWallpaperService
-import vadiole.colorpicker.ColorModel
 import vadiole.colorpicker.ColorPickerDialog
-
 import kotlin.math.abs
 
 
@@ -46,7 +46,8 @@ class SettingsDialog : BaseDialog() {
     private var animPointX = 0f
     private var animPointY = 0f
 
-    private val binding by viewBinding(DialogSettingsBinding::bind)
+    private var binding: DialogSettingsBinding? = null
+    private var bindingAdvanced: AdvancedSettingsBinding? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,21 +64,20 @@ class SettingsDialog : BaseDialog() {
             setOnShowListener {
                 window?.decorView?.withCircularAnimation(
                     View.VISIBLE,
-                    400L,
+                    300L,
                     animPointX,
                     animPointY
                 )
                 window?.decorView?.apply {
                     alpha = 0f
                     animate().alpha(1.0f).setDuration(250L)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                window?.decorView?.performHapticFeedback(
-                                    KEYBOARD_TAP,
-                                    FLAG_IGNORE_GLOBAL_SETTING
-                                )
-                            }
-                        }).start()
+                        .withEndAction {
+                            window?.decorView?.performHapticFeedback(
+                                KEYBOARD_TAP,
+                                FLAG_IGNORE_GLOBAL_SETTING
+                            )
+                        }
+                        .start()
                 }
             }
         }
@@ -89,11 +89,14 @@ class SettingsDialog : BaseDialog() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.dialog_settings, container, false)
+        return DialogSettingsBinding.inflate(inflater).also {
+            binding = it
+            bindingAdvanced = AdvancedSettingsBinding.bind(it.root)
+        }.root
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = binding.run {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = binding?.run {
         view.setEdgeToEdgeSystemUiFlags()
 
         mDetector = GestureDetectorCompat(requireContext(), MyGestureListener {
@@ -139,49 +142,39 @@ class SettingsDialog : BaseDialog() {
             }
         }
 
-        sliderBoidsCount.apply {
+        settingsBoidsCount.apply {
             max = Config.devicePerformance.getMaxBoidsSeekbar()
             progress = Config.boidsCount / 20
-            textBoidsCount.text = (progress * 20).toString()
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    textBoidsCount.text = (progress * 20).toString()
-                }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
+            setValueAdapter {
+                (it * 20).toString()
+            }
+
+            setListener(
+                onStart = {
                     isNeedApply = true
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    Config.boidsCount = seekBar.progress * 20
-                }
-            })
+                },
+                onStop = {
+                    Config.boidsCount = it.progress * 20
+                },
+            )
         }
 
-        sliderBoidsSize.apply {
+        settingsBoidsSize.apply {
             progress = Config.boidsSize - 1
-            textBoidsSize.text = (progress + 1).toString()
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    textBoidsSize.text = (progress + 1).toString()
-                }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
+            setValueAdapter {
+                (it + 1).toString()
+            }
+
+            setListener(
+                onStart = {
                     isNeedApply = true
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    Config.boidsSize = seekBar.progress + 1
-                }
-            })
+                },
+                onStop = {
+                    Config.boidsSize = it.progress + 1
+                },
+            )
         }
 
         buttonBack.onClick {
@@ -191,11 +184,14 @@ class SettingsDialog : BaseDialog() {
 
         settingsBoidsColor.onClick {
             val picker = ColorPickerDialog.Builder()
-                .setColorModel(ColorModel.HSV)
+                .setColorModel(Config.colorPickerModel)
                 .setInitialColor(Config.boidsColor)
                 .setButtonOkText(R.string.action_ok)
                 .setButtonCancelText(R.string.action_cancel)
                 .setColorModelSwitchEnabled(true)
+                .onColorModelSwitched { colorModel ->
+                    Config.colorPickerModel = colorModel
+                }
                 .onColorSelected { color ->
                     Config.boidsColor = color
                     viewBoidsColor.setImageDrawable(ColorDrawable(color))
@@ -203,13 +199,16 @@ class SettingsDialog : BaseDialog() {
                 }
                 .create()
             picker.show(childFragmentManager, "boids_color")
-//                Toast.makeText(context, "Pick boids color", Toast.LENGTH_SHORT).show()
         }
+
         settingsBackgroundColor.onClick {
             val picker = ColorPickerDialog.Builder()
-                .setColorModel(ColorModel.HSV)
+                .setColorModel(Config.colorPickerModel)
                 .setInitialColor(Config.backgroundColor)
                 .setColorModelSwitchEnabled(true)
+                .onColorModelSwitched { colorModel ->
+                    Config.colorPickerModel = colorModel
+                }
                 .onColorSelected { color ->
                     Config.backgroundColor = color
                     viewBackgroundColor.setImageDrawable(ColorDrawable(color))
@@ -217,7 +216,132 @@ class SettingsDialog : BaseDialog() {
                 }
                 .create()
             picker.show(childFragmentManager, "background_color")
-//                Toast.makeText(context, "Pick background color", Toast.LENGTH_SHORT).show()
+        }
+
+        settingsAdvanced.apply {
+
+            val drawable = AnimatedStateListDrawableCompat().apply {
+                addState(
+                    intArrayOf(android.R.attr.state_selected),
+                    VectorDrawableCompat.create(
+                        resources,
+                        R.drawable.expandcollapse_expanded,
+                        null
+                    )!!,
+                    R.id.expanded
+                )
+                addState(
+                    intArrayOf(),
+                    VectorDrawableCompat.create(
+                        resources,
+                        R.drawable.expandcollapse_collapsed,
+                        null
+                    )!!,
+                    R.id.collapsed
+                )
+                addTransition(
+                    R.id.expanded,
+                    R.id.collapsed,
+                    AnimatedVectorDrawableCompat.create(
+                        requireContext(),
+                        R.drawable.expandcollapse_to_collapsed
+                    )!!,
+                    false
+                )
+                addTransition(
+                    R.id.collapsed,
+                    R.id.expanded,
+                    AnimatedVectorDrawableCompat.create(
+                        requireContext(),
+                        R.drawable.expandcollapse_to_expanded,
+                    )!!,
+                    false
+                )
+            }
+
+            isSelected = Config.advancedExtended
+
+
+            setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
+
+            onClick {
+                val visible = !Config.advancedExtended
+
+                settingsAdvancedContainer.isVisible = visible
+                isSelected = visible
+
+                Config.advancedExtended = visible
+            }
+
+            setOnLongClickListener {
+                with(Config) {
+                    if (userAlignment != 10 || userSeparation != 10 || userCohesion != 10 || userTarget != 10) {
+
+                        it.performHapticFeedback(KEYBOARD_TAP, FLAG_IGNORE_GLOBAL_SETTING)
+
+                        Config.run {
+                            userSeparation = 10
+                            userAlignment = 10
+                            userCohesion = 10
+                            userTarget = 10
+                        }
+
+                        bindingAdvanced?.run {
+                            settingsAdvancedSeparation.progress = 10
+                            settingsAdvancedAlignment.progress = 10
+                            settingsAdvancedCohesion.progress = 10
+                            settingsAdvancedTarget.progress = 10
+                        }
+
+                        isNeedApply = true
+                    }
+                }
+                true
+            }
+        }
+
+        settingsAdvancedContainer.isVisible = Config.advancedExtended
+
+        bindingAdvanced?.run {
+            settingsAdvancedSeparation.progress = Config.userSeparation
+            settingsAdvancedSeparation.setListener(
+                onStart = {
+                    isNeedApply = true
+                },
+                onStop = {
+                    Config.userSeparation = it.progress
+                },
+            )
+
+            settingsAdvancedAlignment.progress = Config.userAlignment
+            settingsAdvancedAlignment.setListener(
+                onStart = {
+                    isNeedApply = true
+                },
+                onStop = {
+                    Config.userAlignment = it.progress
+                },
+            )
+
+            settingsAdvancedCohesion.progress = Config.userCohesion
+            settingsAdvancedCohesion.setListener(
+                onStart = {
+                    isNeedApply = true
+                },
+                onStop = {
+                    Config.userCohesion = it.progress
+                },
+            )
+
+            settingsAdvancedTarget.progress = Config.userTarget
+            settingsAdvancedTarget.setListener(
+                onStart = {
+                    isNeedApply = true
+                },
+                onStop = {
+                    Config.userTarget = it.progress
+                },
+            )
         }
 
         madeBy.onClick {
@@ -236,7 +360,7 @@ class SettingsDialog : BaseDialog() {
             true
         }
 
-        root.setOnTouchListener { _, event ->
+        layout.setOnTouchListener { _, event ->
             mDetector.onTouchEvent(event)
             return@setOnTouchListener true
         }
@@ -250,8 +374,13 @@ class SettingsDialog : BaseDialog() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(1000)
             logEvent(AnalyticsEvent.OPEN_SETTINGS)
+            startPostponedEnterTransition()
         }
-    }
+
+        root.doOnPreDraw {
+        }
+        Unit
+    } ?: Unit
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -271,12 +400,17 @@ class SettingsDialog : BaseDialog() {
                 isExitAnimateRun = true
                 if (isNeedApply) listener?.onSettingsAction()
                 it.withCircularAnimation(View.INVISIBLE, 400L, animPointX, animPointY) {
-                    if (it.isAttachedToWindow) it.performHapticFeedback(KEYBOARD_TAP)
+
                     if (isAdded) dismissAllowingStateLoss()
                     isExitAnimateRun = false
                 }
                 it.alpha = 1.0f
-                it.animate().alpha(0.0f).setStartDelay(50L).setDuration(300L).start()
+                it.animate().alpha(0.0f).setDuration(300L).withEndAction {
+                    if (it.isAttachedToWindow) it.performHapticFeedback(
+                        KEYBOARD_TAP,
+                        FLAG_IGNORE_GLOBAL_SETTING
+                    )
+                }.start()
 
                 return true
             }

@@ -3,10 +3,15 @@
     <string name="app_name">Boids 2D</string>
     <string name="settings">Настройки</string>
     <string name="settings_set_live_wallpaper">Установить как живые обои</string>
+    <string name="settings_color_background">Цвет фона</string>
+    <string name="settings_color_boids">Цвет частиц</string>
     <string name="settings_count_of_particles">Количество</string>
     <string name="settings_size_of_particles">Размер</string>
-    <string name="settings_color_boids">Цвет частиц</string>
-    <string name="settings_color_background">Цвет фона</string>
+    <string name="settings_advanced">Расширенные</string>
+    <string name="settings_advanced_separation">Разделение</string>
+    <string name="settings_advanced_alignment">Выравнивание</string>
+    <string name="settings_advanced_cohesion">Сполчённость</string>
+    <string name="settings_advanced_target">Движение к цели</string>
     <string name="tutorial_settings_open">Двойной тап открывает настройки</string>
     <string name="tutorial_settings_close">Свайп вверх закрывает настройки</string>
     <string name="action_ok">ОК</string>
@@ -19,6 +24,6 @@
     <string name="picker_channel_saturation">Н</string>
     <string name="picker_channel_value">Я</string>
     <string name="error_google_play">Невозможно открыть: ни Google Play, ни веб браузер не\u00A0установлены</string>
-    <string name="error_live_wallpaper">Не удается открыть предварительный просмотр живых обоев, попробуйте установить вручную в настройках экрана</string>
+    <string name="error_live_wallpaper">Не удается открыть предварительный просмотр живых обоев, попробуйте установить вручную в настройках домашнего экрана</string>
 
 </resources>

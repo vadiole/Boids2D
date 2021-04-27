@@ -56,7 +56,7 @@ enum class DevicePerformance(val code: String) {
                 (App.context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
             val result =
                 if (androidVersion < 21 || cpuCount <= 2 || memoryClass <= 100 || cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 || cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion <= 21 || cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= 24) {
-                    DevicePerformance.LOW
+                    LOW
                 } else if (cpuCount < 8 || memoryClass <= 160 || maxCpuFreq != -1 && maxCpuFreq <= 1650 || maxCpuFreq == -1 && cpuCount == 8 && androidVersion <= 23) {
                     MEDIUM
                 } else {

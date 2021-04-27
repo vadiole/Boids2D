@@ -1,11 +1,15 @@
 package vadiole.boids2d.model
 
 import android.graphics.Color
+import android.util.Log
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.util.*
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.sqrt
 
 
 class Boid {
@@ -27,11 +31,11 @@ class Boid {
     fun step(
         deltaSec: Double,
         boids: Array<Boid>,
-        neigbours: IntArray,
+        neighbours: IntArray,
         distances: FloatArray,
         targets: Array<Vector>
     ) {
-        val acceleration = flock(boids, neigbours, distances, targets)
+        val acceleration = flock(boids, neighbours, distances, targets)
         velocity.add(acceleration).limit(MAX_VELOCITY)
         distance.copyFrom(velocity).multiply(60 * deltaSec.toFloat())
         location.add(distance)
@@ -39,14 +43,15 @@ class Boid {
 
     private fun flock(
         boids: Array<Boid>,
-        neigbours: IntArray,
+        neighbours: IntArray,
         distances: FloatArray,
         targets: Array<Vector>
     ): Vector {
-        val separation = separate(boids, neigbours, distances).multiply(SEPARATION_WEIGHT)
-        val alignment = align(boids, neigbours).multiply(ALIGNMENT_WEIGHT)
-        val cohesion = cohere(boids, neigbours).multiply(COHESION_WEIGHT)
-        val toTarget = target(targets).multiply(TARGET_WEIGHT)
+        val separation =
+            separate(boids, neighbours, distances).multiply(SEPARATION_WEIGHT * userSeparation)
+        val alignment = align(boids, neighbours).multiply(ALIGNMENT_WEIGHT * userAlignment)
+        val cohesion = cohere(boids, neighbours).multiply(COHESION_WEIGHT * userCohesion)
+        val toTarget = target(targets).multiply(TARGET_WEIGHT * userTarget)
         return separation.add(alignment).add(cohesion).add(toTarget)
     }
 
@@ -64,13 +69,13 @@ class Boid {
         return steerTo(force)
     }
 
-    private fun cohere(boids: Array<Boid>, neigbours: IntArray): Vector {
+    private fun cohere(boids: Array<Boid>, neighbours: IntArray): Vector {
         sum.init()
-        for (n in neigbours) {
+        for (n in neighbours) {
             sum.add(boids[n].location)
         }
         sum.z /= 2
-        return steerTo(sum.divide(neigbours.size + CENTRIC_POWER))
+        return steerTo(sum.divide(neighbours.size + CENTRIC_POWER))
     }
 
     private fun steerTo(target: Vector): Vector {
@@ -89,27 +94,26 @@ class Boid {
         }
     }
 
-    private fun align(boids: Array<Boid>, neigbours: IntArray): Vector {
+    private fun align(boids: Array<Boid>, neighbours: IntArray): Vector {
         align.init()
-        for (n in neigbours) {
+        for (n in neighbours) {
             align.add(boids[n].velocity)
         }
-        align.divide(neigbours.size.toFloat())
+        align.divide(neighbours.size.toFloat())
         return align.limit(MAX_FORCE)
     }
 
-    private fun separate(boids: Array<Boid>, neigbours: IntArray, distances: FloatArray): Vector {
+    private fun separate(boids: Array<Boid>, neighbours: IntArray, distances: FloatArray): Vector {
         separate.init()
         var count = 0
-        for (n in neigbours) {
+        for (n in neighbours) {
             val boid = boids[n]
             val d = distances[n]
             tempVector.copyFrom(location).subtract(boid.location)
             if (d > 0 && d < DESIRED_SEPARATION) {
                 separate.add(
                     tempVector.divide(
-                        Math.sqrt(d.toDouble())
-                            .toFloat()
+                        sqrt(d)
                     )
                 )
                 count++
@@ -128,6 +132,11 @@ class Boid {
 
     companion object {
         var side = 0.015f
+        var userSeparation: Float = 1f
+        var userAlignment: Float = 1f
+        var userCohesion: Float = 1f
+        var userTarget: Float = 1f
+
         const val MAX_VELOCITY = 0.035f
         private const val DESIRED_SEPARATION = 0.01f
         private const val SEPARATION_WEIGHT = 0.05f
@@ -146,8 +155,25 @@ class Boid {
         private val align = Vector(0f, 0f, 0f)
         private val separate = Vector(0f, 0f, 0f)
         private val target = Vector(0f, 0f, 0f)
-        fun initModel(size: Float, color: Int) {
+        fun initModel(
+            size: Float,
+            color: Int,
+            separation: Int,
+            alignment: Int,
+            cohesion: Int,
+            target: Int
+        ) {
             side = size
+            userSeparation = mapToRange(separation.toFloat(), 0f, 20f, 0f, 2f, isLog = false)
+            userAlignment = mapToRange(alignment.toFloat(), 0f, 20f, 0f, 2f, isLog = false)
+            userCohesion = mapToRange(cohesion.toFloat(), 0f, 20f, 0f, 2f, isLog = false)
+            userTarget = mapToRange(target.toFloat(), 0f, 20f, 0f, 2f, isLog = false)
+
+            Log.d(
+                "BOID",
+                "separation: $userSeparation, alignment: $userAlignment, cohesion: $userCohesion, target: $userTarget"
+            );
+
             val indices = byteArrayOf( // Vertex indices of the 4 Triangles
                 2, 4, 3,  // front face (CCW)
                 1, 4, 2,  // right face
@@ -202,6 +228,35 @@ class Boid {
                 position(0)
             }
         }
+
+        @Suppress("SameParameterValue")
+        private fun mapToRange(
+            oldValue: Float,
+            oldMin: Float,
+            oldMax: Float,
+            newMin: Float,
+            newMax: Float,
+            isLog: Boolean = false
+        ): Float {
+
+            val oldRange = (oldMax - oldMin)
+            val newRange = (newMax - newMin)
+            val newValue = (((oldValue - oldMin) * newRange) / oldRange) + newMin
+
+            return if (isLog) {
+                lin2log(newMin.coerceAtLeast(0.001f), newMax, newValue)
+            } else {
+                newValue
+            }
+        }
+
+
+        private fun lin2log(min: Float, max: Float, value: Float): Float {
+            val b: Float = ln((max / min) / (max - min))
+            val a: Float = max / exp(b * max)
+            val tempAnswer: Float = a * exp(b * value)
+            return (tempAnswer - 1f).coerceAtLeast(0f)
+        }
     }
 
     init {
@@ -221,4 +276,6 @@ class Boid {
 
         distance = Vector(0f, 0f, 0f)
     }
+
+
 }

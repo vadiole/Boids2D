@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="ValueSeekbar">
+        <attr name="progress" format="integer" />
+        <attr name="thumbTint" format="color" />
+        <attr name="progressTint" format="color" />
+        <attr name="max" format="integer" />
+        <attr name="textColor" format="integer" />
+    </declare-styleable>
 </resources>

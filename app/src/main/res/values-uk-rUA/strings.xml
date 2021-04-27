@@ -3,10 +3,15 @@
     <string name="app_name">Boids 2D</string>
     <string name="settings">Налаштування</string>
     <string name="settings_set_live_wallpaper">Встановити як живі шпалери</string>
-    <string name="settings_count_of_particles">Кількість</string>
-    <string name="settings_size_of_particles">Розмір</string>
     <string name="settings_color_boids">Колір частинок</string>
     <string name="settings_color_background">Колір фону</string>
+    <string name="settings_count_of_particles">Кількість</string>
+    <string name="settings_size_of_particles">Розмір</string>
+    <string name="settings_advanced">Розширені</string>
+    <string name="settings_advanced_separation">Розділення</string>
+    <string name="settings_advanced_alignment">Вирівнювання</string>
+    <string name="settings_advanced_cohesion">Згуртованість</string>
+    <string name="settings_advanced_target">Рух до цілі</string>
     <string name="tutorial_settings_open">Подвійний тап відкриває налаштування</string>
     <string name="tutorial_settings_close">Свайп вгору закриває налаштування</string>
     <string name="action_ok">ОК</string>

@@ -1,5 +1,6 @@
 package vadiole.boids2d
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -7,8 +8,10 @@ import androidx.core.content.edit
 import vadiole.boids2d.global.DevicePerformance
 import vadiole.boids2d.global.extensions.getDouble
 import vadiole.boids2d.global.extensions.putDouble
+import vadiole.colorpicker.ColorModel
 
 
+@SuppressLint("StaticFieldLeak")
 object Config {
     private const val SHARED_PREFERENCES_NAME = "boids2d_config"
 
@@ -19,7 +22,6 @@ object Config {
     /**
      * call on start up to init preferences
      */
-    @Suppress("DEPRECATION")
     fun init(context: Context) {
         preferences = context.applicationContext.getSharedPreferences(
             SHARED_PREFERENCES_NAME,
@@ -39,6 +41,7 @@ object Config {
         is Long -> edit { putLong(key, value) }
         is Double -> edit { putDouble(key, value) }
         is DevicePerformance -> edit { putString(key, value.code) }
+        is ColorModel -> edit { putString(key, value.name) }
         else -> throw UnsupportedOperationException("Not yet implemented")
     }
 
@@ -58,9 +61,9 @@ object Config {
         Long::class -> getLong(key, default as? Long ?: -1) as T
         Double::class -> getDouble(key, default as? Double ?: -1.0) as T
         DevicePerformance::class -> DevicePerformance.lookupByCode(
-            getString(key, null) ?: (default as? DevicePerformance)?.code
-            ?: DevicePerformance.MEDIUM.code
+            getString(key, null) ?: (default as DevicePerformance).code
         ) as T
+        ColorModel::class -> ColorModel.fromName(getString(key, (default as ColorModel).name)) as T
         else -> throw UnsupportedOperationException("Not yet implemented")
     }
     // endregion
@@ -71,24 +74,40 @@ object Config {
     private const val KEY = "preferenceKey"
     var template: String
         get() = preferences[KEY, null]
-        set(value) = run { preferences[KEY] = value }
+        set(value) = preferences.set(KEY, value)
 
     private const val TUTORIAL_SETTINGS_SHOWN_KEY = "tutorialSettingsShown"
     var tutorialSettingsShown: Boolean
         get() = preferences[TUTORIAL_SETTINGS_SHOWN_KEY, false]
-        set(value) = run { preferences[TUTORIAL_SETTINGS_SHOWN_KEY] = value }
+        set(value) = preferences.set(TUTORIAL_SETTINGS_SHOWN_KEY, value)
 
     private const val TUTORIAL_EXIT_SETTINGS_SHOWN_KEY = "tutorialExitSettingsShown"
     var tutorialExitSettingsShown: Boolean
         get() = preferences[TUTORIAL_EXIT_SETTINGS_SHOWN_KEY, false]
-        set(value) = run { preferences[TUTORIAL_EXIT_SETTINGS_SHOWN_KEY] = value }
+        set(value) = preferences.set(TUTORIAL_EXIT_SETTINGS_SHOWN_KEY, value)
 
 
+    //  colors
+    private const val BOIDS_COLOR_KEY = "boidsColorKey"
+    var boidsColor: Int
+        get() = preferences[BOIDS_COLOR_KEY, Color.WHITE]
+        set(value) = preferences.set(BOIDS_COLOR_KEY, value)
+
+    private const val BACKGROUND_COLOR_KEY = "backgroundColorKey"
+    var backgroundColor: Int
+        get() = preferences[BACKGROUND_COLOR_KEY, Color.BLACK]
+        set(value) = preferences.set(BACKGROUND_COLOR_KEY, value)
+
+    private const val COLOR_PICKER_MODEL_KEY = "colorPickerModel"
+    var colorPickerModel: ColorModel
+        get() = preferences[COLOR_PICKER_MODEL_KEY, ColorModel.HSV]
+        set(value) = preferences.set(COLOR_PICKER_MODEL_KEY, value)
+
+    //  settings
     private const val BOIDS_COUNT_KEY = "boidsCountKey"
     var boidsCount: Int
         get() = preferences[BOIDS_COUNT_KEY, 500]
-        set(value) = run { preferences[BOIDS_COUNT_KEY] = value }
-
+        set(value) = preferences.set(BOIDS_COUNT_KEY, value)
 
     private const val BOIDS_SIZE_KEY = "boidsSizeKey"
     var boidsSize: Int
@@ -96,21 +115,39 @@ object Config {
             val size = preferences[BOIDS_SIZE_KEY, 3]
             return if (size >= 16) 16 else size
         }
-        set(value) = run { preferences[BOIDS_SIZE_KEY] = value }
+        set(value) = preferences.set(BOIDS_SIZE_KEY, value)
 
-    private const val BOIDS_COLOR_KEY = "boidsColorKey"
-    var boidsColor: Int
-        get() = preferences[BOIDS_COLOR_KEY, Color.WHITE]
-        set(value) = run { preferences[BOIDS_COLOR_KEY] = value }
+    //  advanced settings
+    private const val ADVANCED_EXTENDED_KEY = "advanced_extended"
+    var advancedExtended: Boolean
+        get() = preferences[ADVANCED_EXTENDED_KEY, false]
+        set(value) = preferences.set(ADVANCED_EXTENDED_KEY, value)
 
-    private const val BACKGROUND_COLOR_KEY = "backgroundColorKey"
-    var backgroundColor: Int
-        get() = preferences[BACKGROUND_COLOR_KEY, Color.BLACK]
-        set(value) = run { preferences[BACKGROUND_COLOR_KEY] = value }
+    private const val USER_SEPARATION_KEY = "userSeparation"
+    var userSeparation: Int
+        get() = preferences[USER_SEPARATION_KEY, 10]
+        set(value) = preferences.set(USER_SEPARATION_KEY, value)
+
+
+    private const val USER_ALIGNMENT_KEY = "userAlignment"
+    var userAlignment: Int
+        get() = preferences[USER_ALIGNMENT_KEY, 10]
+        set(value) = preferences.set(USER_ALIGNMENT_KEY, value)
+
+    private const val USER_COHESION_KEY = "userCohesion"
+    var userCohesion: Int
+        get() = preferences[USER_COHESION_KEY, 10]
+        set(value) = preferences.set(USER_COHESION_KEY, value)
+
+
+    private const val USER_TARGET_KEY = "userTarget"
+    var userTarget: Int
+        get() = preferences[USER_TARGET_KEY, 10]
+        set(value) = preferences.set(USER_TARGET_KEY, value)
 
     private const val DEVICE_PERFORMANCE_KEY = "devicePerformanceKey"
     var devicePerformance: DevicePerformance
         get() = preferences[DEVICE_PERFORMANCE_KEY, DevicePerformance.getDevicePerformance()]
-        set(value) = run { preferences[DEVICE_PERFORMANCE_KEY] = value }
+        set(value) = preferences.set(DEVICE_PERFORMANCE_KEY, value)
 
 }
